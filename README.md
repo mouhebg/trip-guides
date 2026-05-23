@@ -13,7 +13,4 @@ The browser app uses Supabase email magic-link auth and the `public.user_trips` 
 
 The frontend calls the `generate-trip` Edge Function. The function source lives in `supabase/functions/generate-trip/index.ts`.
 
-Before AI generation works online:
-
-1. Set the Supabase secret `DEEPSEEK_API_KEY`.
-2. Deploy the `generate-trip` Edge Function to project `hkosestllbzvwqzxgkvk`.
+The function is deployed to project `hkosestllbzvwqzxgkvk` and uses the Supabase secret `DEEPSEEK_API_KEY`.
