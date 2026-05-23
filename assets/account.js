@@ -5,6 +5,7 @@
   const SUPABASE_URL = 'https://hkosestllbzvwqzxgkvk.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_5VNqmyvhJ2O7nbhHSp2EBA_DtNuuzGb';
   const GENERATED_PATH = './generated/?id=';
+  const PRODUCTION_HOME = 'https://mouhebg.github.io/trip-guides/';
   const IS_HOME = !!document.getElementById('grid');
   const client = window.supabase && window.supabase.createClient
     ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
@@ -74,6 +75,39 @@
   function shortId(){
     if (window.crypto && crypto.randomUUID) return crypto.randomUUID().slice(0, 8);
     return Math.random().toString(36).slice(2, 10);
+  }
+
+  function isLocalPreview(){
+    return location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+  }
+
+  function authRedirectUrl(){
+    if (isLocalPreview()) return PRODUCTION_HOME;
+    return new URL('./', location.href).href;
+  }
+
+  async function handleAuthRedirect(){
+    const params = new URLSearchParams(location.search);
+    const code = params.get('code');
+    const error = params.get('error_description') || params.get('error');
+    if (error) {
+      toast(error);
+      return;
+    }
+    if (code && client.auth.exchangeCodeForSession) {
+      const result = await client.auth.exchangeCodeForSession(code);
+      if (result.error) toast(result.error.message);
+      else {
+        history.replaceState({}, document.title, location.pathname);
+        toast('Signed in');
+      }
+      return;
+    }
+    if (location.hash.includes('access_token')) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      history.replaceState({}, document.title, location.pathname);
+      toast('Signed in');
+    }
   }
 
   function currentSlug(){
@@ -310,11 +344,11 @@
     button.textContent = 'Sending...';
     const {error} = await client.auth.signInWithOtp({
       email,
-      options: {emailRedirectTo: location.href}
+      options: {emailRedirectTo: authRedirectUrl()}
     });
     button.disabled = false;
     button.textContent = 'Send link';
-    toast(error ? error.message : 'Check your email for the login link.');
+    toast(error ? error.message : isLocalPreview() ? 'Check your email. The link opens the online site.' : 'Check your email for the login link.');
   }
 
   async function signOut(){
@@ -403,7 +437,9 @@
       actions.innerHTML = '<button class="tg-small-btn" type="button" data-sign-out>Sign out</button>';
       actions.querySelector('[data-sign-out]').onclick = signOut;
     } else {
-      status.textContent = 'Sign in by email to save trips and mark visits.';
+      status.textContent = isLocalPreview()
+        ? 'Local preview: email login opens the online site.'
+        : 'Sign in by email to save trips and mark visits.';
       actions.innerHTML = '<input type="email" name="email" autocomplete="email" placeholder="you@example.com" aria-label="Email address"><button class="tg-primary-btn" type="submit">Send link</button>';
     }
     renderSavedList();
@@ -688,6 +724,7 @@
       const grid = document.getElementById('grid');
       if (grid) new MutationObserver(renderCloudFavs).observe(grid, {childList:true});
     }
+    await handleAuthRedirect();
     await refreshSession();
     client.auth.onAuthStateChange(async (_event, nextSession) => {
       session = nextSession;
