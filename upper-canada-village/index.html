@@ -63,6 +63,15 @@
     font-family:'Fraunces', serif;font-style:italic;font-weight:400;font-size:1.3rem;
     color:var(--ink-soft);margin:0 0 30px;
   }
+  .share-btn{
+    appearance:none;-webkit-appearance:none;display:inline-flex;align-items:center;gap:8px;
+    margin:0 0 30px;border:1px solid var(--line);border-radius:999px;background:#FFFDF8;
+    color:var(--ink);padding:9px 15px 9px 12px;font:inherit;font-size:.92rem;font-weight:600;
+    cursor:pointer;transition:border-color .18s ease, background .18s ease, color .18s ease, box-shadow .18s ease;
+  }
+  .share-btn svg{width:18px;height:18px;color:var(--clay-deep);flex:0 0 auto;}
+  .share-btn:hover,.share-btn:focus-visible{border-color:var(--clay);background:var(--clay-tint);outline:none;box-shadow:0 0 0 3px rgba(204,120,92,.18);}
+  .share-btn.copied{border-color:#6E9E5C;background:#EDF5EA;color:#3D6A33;}
 
   /* Hero illustration */
   .hero{
@@ -197,6 +206,7 @@
     .ag-item.done .ag-check{background:#fff;}
     .ag-item.done .ag-check svg{opacity:0;}
     .ag-check{border-color:#999;}
+    .share-btn{display:none;}
   }
 </style>
 </head>
@@ -208,6 +218,10 @@
       <p class="eyebrow reveal" style="animation-delay:.05s">Ottawa Region · Day Trip</p>
       <h1 class="reveal" style="animation-delay:.12s">Upper Canada Village</h1>
       <p class="dek reveal" style="animation-delay:.2s">A gentle day in the 1860s, paced for time with your grandfather</p>
+      <button class="share-btn reveal" style="animation-delay:.24s" type="button" data-share-title="Upper Canada Village" aria-label="Share Upper Canada Village guide" onclick="shareTrip(this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.7l6.8-4.4M8.6 13.3l6.8 4.4"/></svg>
+        <span class="share-label">Share</span>
+      </button>
     </header>
 
     <!-- Hero illustration -->
@@ -548,6 +562,50 @@
   </article>
 
   <script>
+    async function copyLink(url){
+      if(navigator.clipboard && window.isSecureContext){
+        await navigator.clipboard.writeText(url);
+        return;
+      }
+      var field = document.createElement('textarea');
+      field.value = url;
+      field.setAttribute('readonly', '');
+      field.style.position = 'fixed';
+      field.style.left = '-9999px';
+      document.body.appendChild(field);
+      field.select();
+      document.execCommand('copy');
+      field.remove();
+    }
+    function showCopied(btn){
+      var label = btn.querySelector('.share-label');
+      if(!label){ return; }
+      var old = label.textContent;
+      btn.classList.add('copied');
+      label.textContent = 'Copied';
+      window.clearTimeout(btn._shareTimer);
+      btn._shareTimer = window.setTimeout(function(){
+        label.textContent = old;
+        btn.classList.remove('copied');
+      }, 1600);
+    }
+    async function shareTrip(btn){
+      var url = window.location.href;
+      var title = btn.getAttribute('data-share-title') || document.title;
+      try{
+        if(navigator.share){
+          await navigator.share({title:title, url:url});
+          return;
+        }
+        await copyLink(url);
+        showCopied(btn);
+      }catch(err){
+        if(!err || err.name !== 'AbortError'){
+          await copyLink(url);
+          showCopied(btn);
+        }
+      }
+    }
     function refreshNext(){
       var items = document.querySelectorAll('#agList .ag-item');
       var found = false;
