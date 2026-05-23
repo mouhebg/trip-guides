@@ -1,0 +1,61 @@
+/* Trip Guides — enhancement layer (shared across guide pages) */
+
+/* Reading progress bar */
+.tg-progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,#3a6b4c,#8fc9a3);z-index:9999;transition:width .1s linear}
+
+/* Back-to-guides pill */
+.tg-back{position:fixed;top:14px;left:14px;z-index:1000;display:inline-flex;align-items:center;gap:8px;padding:8px 14px;background:var(--surface,#fff);border:1px solid var(--line,#e2ddcf);border-radius:999px;font:600 13px/1 'Inter',system-ui,sans-serif;color:var(--ink,#1f1e1d);text-decoration:none;box-shadow:0 1px 2px rgba(0,0,0,.05),0 6px 18px rgba(0,0,0,.06);transition:transform .15s, background .2s}
+.tg-back:hover{transform:translateX(-2px)}
+.tg-back svg{width:14px;height:14px}
+
+/* Sticky table of contents (desktop only) */
+.tg-toc{position:fixed;top:64px;right:14px;z-index:998;width:220px;padding:14px 16px;background:var(--surface,#fff);border:1px solid var(--line,#e2ddcf);border-radius:14px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 10px 28px rgba(0,0,0,.06);font:500 13px/1.4 'Inter',system-ui,sans-serif}
+.tg-toc h6{margin:0 0 10px;font:700 11px/1 'Inter',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft,#5a574f)}
+.tg-toc ol{list-style:none;margin:0;padding:0;counter-reset:tg}
+.tg-toc li{counter-increment:tg;margin:2px 0}
+.tg-toc a{display:block;padding:7px 8px 7px 28px;border-radius:8px;color:var(--ink,#1f1e1d);text-decoration:none;position:relative;transition:background .15s}
+.tg-toc a::before{content:counter(tg,decimal-leading-zero);position:absolute;left:6px;top:7px;font:700 10px/1.4 'Inter',sans-serif;color:var(--clay,#cc785c)}
+.tg-toc a:hover{background:var(--line-soft,#ece8dc)}
+.tg-toc a.active{background:var(--clay-tint,#f6e4da);color:var(--clay-deep,#b05f3d)}
+@media (max-width:1180px){.tg-toc{display:none}}
+
+/* Floating action toolbar */
+.tg-actions{position:fixed;right:14px;bottom:18px;z-index:999;display:flex;flex-direction:column;gap:8px}
+.tg-btn{width:42px;height:42px;border-radius:50%;border:1px solid var(--line,#e2ddcf);background:var(--surface,#fff);color:var(--ink,#1f1e1d);cursor:pointer;display:grid;place-items:center;box-shadow:0 1px 2px rgba(0,0,0,.05),0 8px 22px rgba(0,0,0,.08);transition:transform .15s, background .2s}
+.tg-btn:hover{transform:translateY(-2px)}
+.tg-btn svg{width:18px;height:18px}
+.tg-toast{position:fixed;bottom:80px;right:20px;background:#1f1e1d;color:#fff;padding:10px 14px;border-radius:10px;font:500 13px 'Inter',sans-serif;z-index:1001;opacity:0;transform:translateY(6px);transition:opacity .2s, transform .2s;pointer-events:none}
+.tg-toast.show{opacity:1;transform:translateY(0)}
+
+/* Progress chip near the itinerary heading */
+.tg-progress-chip{display:inline-flex;align-items:center;gap:8px;margin-left:12px;padding:4px 10px;border-radius:999px;background:var(--clay-tint,#f6e4da);color:var(--clay-deep,#b05f3d);font:600 12px/1 'Inter',sans-serif;vertical-align:middle}
+.tg-progress-chip .bar{width:60px;height:4px;border-radius:999px;background:rgba(176,95,61,.25);overflow:hidden;display:inline-block}
+.tg-progress-chip .bar i{display:block;height:100%;background:var(--clay,#cc785c);transition:width .3s}
+
+/* Dark mode overrides for existing pages */
+body[data-tg-theme="dark"]{
+  --bg:#15140f !important;
+  --surface:#1c1b16 !important;
+  --ink:#f1ece1 !important;
+  --ink-soft:#9b9484 !important;
+  --line:#2c2a23 !important;
+  --line-soft:#23221c !important;
+  --clay:#e0a486 !important;
+  --clay-deep:#f0b89a !important;
+  --clay-tint:#33231b !important;
+  background:#15140f !important;
+  color:#f1ece1 !important;
+}
+body[data-tg-theme="dark"] .tg-toc,
+body[data-tg-theme="dark"] .tg-back,
+body[data-tg-theme="dark"] .tg-btn{background:#1c1b16;border-color:#2c2a23;color:#f1ece1}
+body[data-tg-theme="dark"] .tg-toc a{color:#f1ece1}
+body[data-tg-theme="dark"] .tg-toc a:hover{background:#23221c}
+body[data-tg-theme="dark"] img,body[data-tg-theme="dark"] svg{filter:brightness(.92)}
+
+/* Print: hide UI chrome */
+@media print{
+  .tg-progress,.tg-back,.tg-toc,.tg-actions,.tg-toast{display:none !important}
+  .tg-progress-chip{display:none}
+  body{background:white !important;color:black !important}
+}
