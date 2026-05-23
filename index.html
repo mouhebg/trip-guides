@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trip Guides</title>
+  <style>
+    :root{
+      --bg:#f3f1ea;
+      --surface:#fffdf8;
+      --ink:#1f1e1d;
+      --muted:#646059;
+      --line:#ddd7c8;
+      --accent:#5d7d67;
+      --accent-soft:#e4ece3;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      background:var(--bg);
+      color:var(--ink);
+      font:17px/1.6 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    }
+    main{
+      width:min(900px, calc(100% - 32px));
+      margin:0 auto;
+      padding:56px 0;
+    }
+    header{
+      margin-bottom:28px;
+      border-bottom:1px solid var(--line);
+      padding-bottom:22px;
+    }
+    h1{
+      margin:0 0 8px;
+      font-size:clamp(2rem, 5vw, 3.2rem);
+      line-height:1.05;
+      letter-spacing:0;
+    }
+    p{margin:0;color:var(--muted)}
+    .guides{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+      gap:14px;
+      margin-top:24px;
+    }
+    a{
+      display:block;
+      min-height:140px;
+      padding:22px;
+      border:1px solid var(--line);
+      border-radius:8px;
+      background:var(--surface);
+      color:inherit;
+      text-decoration:none;
+      transition:border-color .16s ease, transform .16s ease, box-shadow .16s ease;
+    }
+    a:hover,
+    a:focus-visible{
+      border-color:var(--accent);
+      box-shadow:0 12px 28px -22px rgba(31,30,29,.55);
+      transform:translateY(-1px);
+      outline:none;
+    }
+    .label{
+      display:inline-block;
+      margin-bottom:14px;
+      border-radius:999px;
+      background:var(--accent-soft);
+      color:#34533e;
+      padding:4px 10px;
+      font-size:.78rem;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+    }
+    h2{
+      margin:0 0 6px;
+      font-size:1.25rem;
+      line-height:1.2;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Trip Guides</h1>
+      <p>A small online shelf for personal day-trip plans and printable guides.</p>
+    </header>
+
+    <section class="guides" aria-label="Available guides">
+      <a href="./parc-omega/">
+        <span class="label">Day trip</span>
+        <h2>Parc Om&eacute;ga</h2>
+        <p>Montebello wildlife safari plan with a 9:00 AM departure.</p>
+      </a>
+    </section>
+  </main>
+</body>
+</html>
