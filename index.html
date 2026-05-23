@@ -57,11 +57,11 @@
   .card:hover{transform:translateY(-3px);box-shadow:0 4px 8px rgba(0,0,0,.06), 0 20px 40px rgba(31,29,26,.12)}
   .cover-link{display:block;color:inherit;text-decoration:none}
   .cover-link:focus-visible,.ttl a:focus-visible,.read:focus-visible{outline:3px solid var(--accent-soft);outline-offset:3px;border-radius:6px}
-  .cover{aspect-ratio:16/10;background:linear-gradient(135deg,#cfe0d3,#a7c4b0);position:relative}
+  .cover{aspect-ratio:16/10;background:linear-gradient(135deg,#cfe0d3,#a7c4b0);position:relative;overflow:hidden}
   .cover.parc-omega{background:radial-gradient(circle at 30% 70%, rgba(255,255,255,.25), transparent 50%),linear-gradient(135deg,#3a6b4c 0%, #1f3a2a 60%, #6b8a4c 100%)}
   .cover.upper-canada-village{background:radial-gradient(circle at 70% 30%, rgba(255,255,255,.2), transparent 50%),linear-gradient(135deg,#b07a3a 0%, #6e4a22 60%, #d9a665 100%)}
   .cover.placeholder{background:repeating-linear-gradient(45deg, var(--chip) 0 10px, var(--paper) 10px 20px)}
-  .cover .badge{position:absolute;top:12px;left:12px;background:rgba(255,255,255,.92);color:#1f1d1a;font-size:11px;font-weight:600;letter-spacing:.08em;padding:5px 10px;border-radius:999px;text-transform:uppercase}
+  .cover .badge{position:absolute;top:12px;left:12px;z-index:2;background:rgba(255,255,255,.92);color:#1f1d1a;font-size:11px;font-weight:600;letter-spacing:.08em;padding:5px 10px;border-radius:999px;text-transform:uppercase}
   .card-actions{position:absolute;top:10px;right:10px;z-index:3;display:flex;gap:8px}
   .fav,.share-card{width:34px;height:34px;background:rgba(255,255,255,.92);border-radius:50%;border:0;cursor:pointer;display:grid;place-items:center;color:#1f1d1a;transition:transform .15s, background .2s, color .2s}
   .fav:hover,.share-card:hover{transform:translateY(-1px)}
@@ -69,9 +69,6 @@
   .fav[aria-pressed="true"] svg{fill:#e0354b;color:#e0354b}
   .share-card.copied{background:var(--accent);color:white}
   .body{padding:18px 20px 20px;display:flex;flex-direction:column;gap:10px;flex:1}
-  .trip-summary{display:flex;gap:14px;align-items:flex-start}
-  .trip-thumb{width:66px;height:66px;flex:0 0 66px;border-radius:12px;border:1px solid var(--line);object-fit:cover;background:var(--chip);box-shadow:0 8px 18px rgba(31,29,26,.08)}
-  .trip-main{min-width:0;display:flex;flex-direction:column;gap:8px;flex:1}
   .loc{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}
   .ttl{font-family:Fraunces,serif;font-weight:700;font-size:22px;letter-spacing:-.01em;margin:0}
   .ttl a{color:inherit;text-decoration:none}
@@ -89,7 +86,9 @@
   .copy-toast.show{opacity:1;transform:translate(-50%, 0)}
   footer.page{border-top:1px solid var(--line);padding:30px 0;font-size:13px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
   @media print{.toolbar,.chips,.nav-actions,.card-actions,.copy-toast{display:none}.card{break-inside:avoid;box-shadow:none;border:1px solid #ccc}body{background:white}}
-  .cover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(0,0,0,.18));pointer-events:none}
+  .cover img{position:absolute;inset:0;z-index:0;width:100%;height:100%;object-fit:cover;display:block}
+  .cover.has-photo{background:#1f1d1a}
+  .cover::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,transparent 55%,rgba(0,0,0,.18));pointer-events:none}
   .credit{font-size:11px;color:var(--muted);margin-top:8px}
   .credit a{color:inherit;text-decoration:underline;text-decoration-color:rgba(0,0,0,.2)}
   [data-theme="dark"] .card{box-shadow:0 1px 2px rgba(0,0,0,.44), 0 16px 34px rgba(0,0,0,.28)}
@@ -103,13 +102,9 @@
     color:var(--ink);
     backdrop-filter:saturate(130%) blur(6px);
   }
-  [data-theme="dark"] .trip-thumb{box-shadow:0 8px 18px rgba(0,0,0,.28)}
   [data-theme="dark"] .fav[aria-pressed="true"] svg{fill:#ff6b85;color:#ff6b85}
   [data-theme="dark"] .share-card.copied{background:var(--accent);border-color:var(--accent);color:#102016}
   [data-theme="dark"] .credit a{text-decoration-color:rgba(241,236,225,.34)}
-  @media (max-width:420px){
-    .trip-thumb{width:58px;height:58px;flex-basis:58px;border-radius:10px}
-  }
 </style>
 </head>
 <body>
@@ -277,21 +272,17 @@
       card.className = "card" + (t.available ? "" : " disabled");
       card.innerHTML = `
         <${coverTag} class="cover-link"${coverHref}>
-          <div class="cover ${t.cover}">
+          <div class="cover ${t.cover}${t.photo ? ' has-photo' : ''}">
+            ${t.photo ? `<img src="${t.photo}" alt="${t.photoAlt || t.title}" loading="lazy">` : ""}
             <span class="badge">${t.available ? "Day Trip" : "Coming soon"}</span>
           </div>
         </${coverTag}>
           <div class="body">
-            <div class="trip-summary">
-              ${t.photo ? `<img class="trip-thumb" src="${t.photo}" alt="${t.photoAlt || t.title}" loading="lazy">` : ""}
-              <div class="trip-main">
-                <div class="loc">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-7.6 8-13a8 8 0 1 0-16 0c0 5.4 8 13 8 13z"/><circle cx="12" cy="9" r="2.5"/></svg>
-                  ${t.location}
-                </div>
-                <h2 class="ttl">${title}</h2>
-              </div>
+            <div class="loc">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-7.6 8-13a8 8 0 1 0-16 0c0 5.4 8 13 8 13z"/><circle cx="12" cy="9" r="2.5"/></svg>
+              ${t.location}
             </div>
+            <h2 class="ttl">${title}</h2>
             <p class="desc">${t.desc}</p>
             <div class="meta">${t.tags.map(x=>`<span class="tag">${x}</span>`).join("")}</div>
             <div class="footer-row">
