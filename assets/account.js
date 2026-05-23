@@ -5,10 +5,16 @@
   const SUPABASE_URL = 'https://hkosestllbzvwqzxgkvk.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_5VNqmyvhJ2O7nbhHSp2EBA_DtNuuzGb';
   const GENERATED_PATH = './generated/?id=';
-  const PRODUCTION_HOME = 'https://mouhebg.github.io/trip-guides/';
   const IS_HOME = !!document.getElementById('grid');
   const client = window.supabase && window.supabase.createClient
-    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+      auth: {
+        autoRefreshToken: true,
+        detectSessionInUrl: false,
+        flowType: 'implicit',
+        persistSession: true
+      }
+    })
     : null;
 
   let session = null;
@@ -77,36 +83,77 @@
     return Math.random().toString(36).slice(2, 10);
   }
 
-  function isLocalPreview(){
-    return location.hostname === 'localhost' || location.hostname === '127.0.0.1';
-  }
-
   function authRedirectUrl(){
-    if (isLocalPreview()) return PRODUCTION_HOME;
     return new URL('./', location.href).href;
   }
 
+  function authParam(name){
+    const search = new URLSearchParams(location.search);
+    const hash = new URLSearchParams(location.hash.replace(/^#/, ''));
+    return hash.get(name) || search.get(name);
+  }
+
+  function cleanAuthUrl(){
+    const url = new URL(location.href);
+    [
+      'access_token',
+      'code',
+      'error',
+      'error_code',
+      'error_description',
+      'expires_at',
+      'expires_in',
+      'provider_refresh_token',
+      'provider_token',
+      'refresh_token',
+      'token',
+      'token_hash',
+      'token_type',
+      'type'
+    ].forEach(key => url.searchParams.delete(key));
+    url.hash = '';
+    history.replaceState({}, document.title, url.pathname + url.search);
+  }
+
   async function handleAuthRedirect(){
-    const params = new URLSearchParams(location.search);
-    const code = params.get('code');
-    const error = params.get('error_description') || params.get('error');
+    const accessToken = authParam('access_token');
+    const refreshToken = authParam('refresh_token');
+    const code = authParam('code');
+    const tokenHash = authParam('token_hash') || authParam('token');
+    const type = authParam('type') || 'magiclink';
+    const error = authParam('error_description') || authParam('error');
     if (error) {
       toast(error);
+      return;
+    }
+    if (accessToken && refreshToken && client.auth.setSession) {
+      const result = await client.auth.setSession({
+        access_token: accessToken,
+        refresh_token: refreshToken
+      });
+      if (result.error) toast(result.error.message);
+      else {
+        cleanAuthUrl();
+        toast('Signed in');
+      }
       return;
     }
     if (code && client.auth.exchangeCodeForSession) {
       const result = await client.auth.exchangeCodeForSession(code);
       if (result.error) toast(result.error.message);
       else {
-        history.replaceState({}, document.title, location.pathname);
+        cleanAuthUrl();
         toast('Signed in');
       }
       return;
     }
-    if (location.hash.includes('access_token')) {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      history.replaceState({}, document.title, location.pathname);
-      toast('Signed in');
+    if (tokenHash && client.auth.verifyOtp) {
+      const result = await client.auth.verifyOtp({token_hash: tokenHash, type});
+      if (result.error) toast(result.error.message);
+      else {
+        cleanAuthUrl();
+        toast('Signed in');
+      }
     }
   }
 
@@ -348,7 +395,7 @@
     });
     button.disabled = false;
     button.textContent = 'Send link';
-    toast(error ? error.message : isLocalPreview() ? 'Check your email. The link opens the online site.' : 'Check your email for the login link.');
+    toast(error ? error.message : 'Check your email for the login link.');
   }
 
   async function signOut(){
@@ -437,9 +484,7 @@
       actions.innerHTML = '<button class="tg-small-btn" type="button" data-sign-out>Sign out</button>';
       actions.querySelector('[data-sign-out]').onclick = signOut;
     } else {
-      status.textContent = isLocalPreview()
-        ? 'Local preview: email login opens the online site.'
-        : 'Sign in by email to save trips and mark visits.';
+      status.textContent = 'Sign in by email to save trips and mark visits.';
       actions.innerHTML = '<input type="email" name="email" autocomplete="email" placeholder="you@example.com" aria-label="Email address"><button class="tg-primary-btn" type="submit">Send link</button>';
     }
     renderSavedList();
