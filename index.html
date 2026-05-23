@@ -106,9 +106,9 @@
   [data-theme="dark"] .share-card.copied{background:var(--accent);border-color:var(--accent);color:#102016}
   [data-theme="dark"] .credit a{text-decoration-color:rgba(241,236,225,.34)}
 </style>
-<link rel="stylesheet" href="./assets/account.css?v=supabase-auth">
+<link rel="stylesheet" href="./assets/account.css?v=cloud-guides">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-<script src="./assets/account.js?v=supabase-auth" defer></script>
+<script src="./assets/account.js?v=cloud-guides" defer></script>
 </head>
 <body>
 <header class="hero">
@@ -160,7 +160,7 @@
     {id:"placeholder-1",href:"#",title:"Coming soon",location:"Ottawa Valley",desc:"A future walking guide — details to follow.",tags:["Nature","Walking"],distance:60,duration:"Half day",season:"Summer",added:"2025-01-01",cover:"placeholder",available:false}
   ];
   window.TRIP_GUIDES = TRIPS;
-  const ALL_TAGS = [...new Set(TRIPS.flatMap(t=>t.tags))];
+  const CLOUD_TRIP_IDS = new Set();
   const state = {q:"",tags:new Set(),favOnly:false,sort:"recent"};
   const theme = localStorage.getItem("tg-theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
   document.documentElement.dataset.theme = theme;
@@ -172,16 +172,34 @@
   const favs = new Set(JSON.parse(localStorage.getItem("tg-favs") || "[]"));
   const saveFavs = () => localStorage.setItem("tg-favs", JSON.stringify([...favs]));
   const chipsEl = document.getElementById("chips");
-  ALL_TAGS.forEach(tag => {
-    const b = document.createElement("button");
-    b.className = "chip"; b.textContent = tag; b.setAttribute("aria-pressed","false");
-    b.onclick = () => {
-      if (state.tags.has(tag)) state.tags.delete(tag); else state.tags.add(tag);
-      b.setAttribute("aria-pressed", state.tags.has(tag));
-      render();
-    };
-    chipsEl.appendChild(b);
-  });
+  function renderChips(){
+    const tags = [...new Set(TRIPS.flatMap(t => t.tags || []))].sort((a,b)=>a.localeCompare(b));
+    chipsEl.innerHTML = "";
+    tags.forEach(tag => {
+      const b = document.createElement("button");
+      b.className = "chip"; b.textContent = tag; b.setAttribute("aria-pressed", state.tags.has(tag) ? "true" : "false");
+      b.onclick = () => {
+        if (state.tags.has(tag)) state.tags.delete(tag); else state.tags.add(tag);
+        b.setAttribute("aria-pressed", state.tags.has(tag));
+        render();
+      };
+      chipsEl.appendChild(b);
+    });
+  }
+  window.setCloudTripGuides = function(incoming){
+    for (let i = TRIPS.length - 1; i >= 0; i--) {
+      if (CLOUD_TRIP_IDS.has(TRIPS[i].id)) TRIPS.splice(i, 1);
+    }
+    CLOUD_TRIP_IDS.clear();
+    (incoming || []).forEach(trip => {
+      if (!trip || !trip.id) return;
+      CLOUD_TRIP_IDS.add(trip.id);
+      TRIPS.push(trip);
+    });
+    renderChips();
+    render();
+  };
+  renderChips();
   const searchEl = document.getElementById("search");
   searchEl.oninput = e => { state.q = e.target.value.toLowerCase(); render(); };
   document.getElementById("sort").onchange = e => { state.sort = e.target.value; render(); };
@@ -253,15 +271,34 @@
       }
     }
   }
+  function esc(value){
+    return String(value || "").replace(/[&<>"']/g, char => ({
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#39;"
+    }[char]));
+  }
+  function tripDistanceValue(trip){
+    if (typeof trip.distance === "number") return trip.distance;
+    const match = String(trip.distance || trip.distanceLabel || "").match(/\d+(?:\.\d+)?/);
+    return match ? Number(match[0]) : Number.POSITIVE_INFINITY;
+  }
+  function tripDistanceLabel(trip){
+    if (trip.distanceLabel) return trip.distanceLabel;
+    if (typeof trip.distance === "number") return `${trip.distance} km`;
+    return trip.distance || "";
+  }
   function render() {
     let list = TRIPS.filter(t => {
-      const hay = (t.title + " " + t.location + " " + t.tags.join(" ")).toLowerCase();
+      const hay = (t.title + " " + t.location + " " + (t.tags || []).join(" ")).toLowerCase();
       if (state.q && !hay.includes(state.q)) return false;
-      if (state.tags.size && !t.tags.some(tag => state.tags.has(tag))) return false;
+      if (state.tags.size && !(t.tags || []).some(tag => state.tags.has(tag))) return false;
       if (state.favOnly && !favs.has(t.id)) return false;
       return true;
     });
-    if (state.sort === "distance") list.sort((a,b)=>a.distance-b.distance);
+    if (state.sort === "distance") list.sort((a,b)=>tripDistanceValue(a)-tripDistanceValue(b));
     if (state.sort === "title") list.sort((a,b)=>a.title.localeCompare(b.title));
     if (state.sort === "recent") list.sort((a,b)=>b.added.localeCompare(a.added));
     grid.innerHTML = "";
@@ -270,36 +307,40 @@
       const fav = favs.has(t.id);
       const card = document.createElement("article");
       const coverTag = t.available ? "a" : "div";
-      const coverHref = t.available ? ` href="${t.href}" aria-label="Read ${t.title} guide"` : "";
-      const title = t.available ? `<a href="${t.href}">${t.title}</a>` : t.title;
-      const read = t.available ? `<a class="read" href="${t.href}">Read guide →</a>` : `<span class="read">Soon</span>`;
+      const href = esc(t.href || "#");
+      const titleText = esc(t.title);
+      const tags = t.tags || [];
+      const footerText = [tripDistanceLabel(t), t.duration, t.season].filter(Boolean).map(esc).join(" &middot; ");
+      const coverHref = t.available ? ` href="${href}" aria-label="Read ${titleText} guide"` : "";
+      const title = t.available ? `<a href="${href}">${titleText}</a>` : titleText;
+      const read = t.available ? `<a class="read" href="${href}">Read guide &rarr;</a>` : `<span class="read">Soon</span>`;
       card.className = "card" + (t.available ? "" : " disabled");
       card.innerHTML = `
         <${coverTag} class="cover-link"${coverHref}>
-          <div class="cover ${t.cover}${t.photo ? ' has-photo' : ''}">
-            ${t.photo ? `<img src="${t.photo}" alt="${t.photoAlt || t.title}" loading="lazy">` : ""}
+          <div class="cover ${esc(t.cover || "placeholder")}${t.photo ? ' has-photo' : ''}">
+            ${t.photo ? `<img src="${esc(t.photo)}" alt="${esc(t.photoAlt || t.title)}" loading="lazy">` : ""}
             <span class="badge">${t.available ? "Day Trip" : "Coming soon"}</span>
           </div>
         </${coverTag}>
           <div class="body">
             <div class="loc">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-7.6 8-13a8 8 0 1 0-16 0c0 5.4 8 13 8 13z"/><circle cx="12" cy="9" r="2.5"/></svg>
-              ${t.location}
+              ${esc(t.location)}
             </div>
             <h2 class="ttl">${title}</h2>
-            <p class="desc">${t.desc}</p>
-            <div class="meta">${t.tags.map(x=>`<span class="tag">${x}</span>`).join("")}</div>
+            <p class="desc">${esc(t.desc)}</p>
+            <div class="meta">${tags.map(x=>`<span class="tag">${esc(x)}</span>`).join("")}</div>
             <div class="footer-row">
-              <small>${t.distance} km · ${t.duration} · ${t.season}</small>
+              <small>${footerText}</small>
               ${read}
             </div>
             ${t.credit ? `<div class="credit">${t.credit}</div>` : ""}
           </div>
         ${t.available ? `<div class="card-actions">
-          <button class="share-card" type="button" data-id="${t.id}" aria-label="Share ${t.title}" title="Share ${t.title}">
+          <button class="share-card" type="button" data-id="${esc(t.id)}" aria-label="Share ${titleText}" title="Share ${titleText}">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>
           </button>
-          <button class="fav" type="button" aria-pressed="${fav}" data-id="${t.id}" aria-label="Save ${t.title} to favorites" title="Save to favorites">
+          <button class="fav" type="button" aria-pressed="${fav}" data-id="${esc(t.id)}" aria-label="Save ${titleText} to favorites" title="Save to favorites">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 1 0-7.8 7.8l8.8 8.8 8.8-8.8a5.5 5.5 0 0 0 0-7.8z"/></svg>
           </button>
         </div>` : ""}`;

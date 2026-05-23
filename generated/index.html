@@ -3,46 +3,81 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Generated Trip Guide</title>
-<meta name="description" content="A saved AI-generated trip guide.">
+<title>Saved Trip Guide</title>
+<meta name="description" content="A saved custom trip guide.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root{--bg:#F5EFE6;--surface:#FFFCF6;--ink:#25231F;--ink-soft:#6B665E;--line:#E4DBCB;--line-soft:#EFE7D8;--clay:#CC785C;--clay-deep:#AA5D40;--clay-tint:#F6E4DA;--green:#3A6B4C}
+  :root{--bg:#F5EFE6;--surface:#FFFCF6;--ink:#25231F;--ink-soft:#6B665E;--line:#E4DBCB;--line-soft:#EFE7D8;--clay:#CC785C;--clay-deep:#AA5D40;--clay-tint:#F6E4DA;--green:#3A6B4C;--shadow:0 18px 40px -30px rgba(31,30,29,.42)}
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Hanken Grotesk',system-ui,sans-serif;line-height:1.65}
-  .page{max-width:760px;margin:0 auto;background:var(--surface);min-height:100vh;border-left:1px solid var(--line);border-right:1px solid var(--line);padding:56px 44px 72px}
-  .back{display:inline-flex;align-items:center;gap:8px;margin-bottom:28px;border:1px solid var(--line);border-radius:999px;padding:8px 13px;color:var(--ink);text-decoration:none;font-weight:700}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Hanken Grotesk',system-ui,sans-serif;line-height:1.65;-webkit-font-smoothing:antialiased}
+  .page{max-width:820px;margin:0 auto;background:var(--surface);min-height:100vh;border-left:1px solid var(--line);border-right:1px solid var(--line);padding:52px 48px 72px}
+  .back{display:inline-flex;align-items:center;gap:8px;margin-bottom:28px;border:1px solid var(--line);border-radius:999px;padding:8px 13px;color:var(--ink);text-decoration:none;font-weight:700;background:#fffdf8}
+  .back:focus-visible,.share-btn:focus-visible,.agenda-card:focus-visible{outline:3px solid rgba(204,120,92,.25);outline-offset:3px}
   .eyebrow{font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--clay-deep);margin:0 0 18px}
-  h1,h2,h3{font-family:'Fraunces',serif;font-weight:600;line-height:1.12}
-  h1{font-size:clamp(2.4rem,7vw,4.4rem);letter-spacing:-.02em;margin:0 0 14px}
+  h1,h2{font-family:'Fraunces',serif;font-weight:600;line-height:1.12}
+  h1{font-size:clamp(2.45rem,7vw,4.65rem);letter-spacing:-.02em;margin:0 0 14px}
   .dek{font-family:'Fraunces',serif;font-style:italic;font-size:1.25rem;color:var(--ink-soft);margin:0 0 24px}
-  .actions{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:34px}
-  .btn{appearance:none;border:1px solid var(--line);border-radius:999px;background:#fffdf8;color:var(--ink);font:700 14px 'Hanken Grotesk',sans-serif;padding:9px 14px;text-decoration:none;cursor:pointer}
-  .btn[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:#fff}
-  .facts{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0 32px}
-  .chip{border:1px solid var(--line);border-radius:999px;background:#fffdf8;padding:8px 13px;font-size:.94rem}
-  .hero{margin:0 0 34px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:linear-gradient(135deg,#d7e4db,#f5d5bf);padding:32px}
-  .hero svg{display:block;width:100%;height:auto;max-height:240px}
-  .journey,.tips{border:1px solid var(--line);border-radius:14px;background:#fffdf8;margin:38px 0;overflow:hidden}
-  .journey-head{background:var(--clay);color:#fff7ef;font-family:'Fraunces',serif;font-size:1.15rem;padding:15px 24px}
-  .journey-body,.tips{padding:24px}
-  .timeline{display:grid;gap:14px}
-  .time-row{display:grid;grid-template-columns:82px 1fr;gap:16px;padding-bottom:14px;border-bottom:1px solid var(--line-soft)}
-  .time{font-family:'Fraunces',serif;font-weight:700;color:var(--clay-deep)}
-  section{margin-top:48px}
+  .header-actions{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 30px}
+  .share-btn{appearance:none;border:1px solid var(--line);border-radius:999px;background:#FFFDF8;color:var(--ink);padding:9px 15px 9px 12px;font:inherit;font-size:.92rem;font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+  .share-btn svg{width:18px;height:18px;color:var(--clay-deep);flex:0 0 auto}
+  .share-btn[aria-pressed="true"],.share-btn.copied{border-color:#6E9E5C;background:#EDF5EA;color:#315a28}
+  .hero{margin:0 0 34px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:linear-gradient(135deg,#d7e4db,#f5d5bf);box-shadow:var(--shadow)}
+  .hero img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}
+  .hero svg{display:block;width:100%;height:auto}
+  .intro{font-size:1.04rem;color:var(--ink);margin:0 0 24px}
+  .facts{display:flex;flex-wrap:wrap;gap:10px;margin:28px 0 8px}
+  .fact{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:999px;background:#FFFDF8;padding:8px 13px;color:var(--ink-soft)}
+  .journey,.tip-box,.uploaded-shell{border:1px solid var(--line);border-radius:14px;background:#fffdf8;margin:38px 0;overflow:hidden}
+  .journey-head{background:var(--clay);color:#fff7ef;font-family:'Fraunces',serif;font-size:1.18rem;padding:16px 24px}
+  .journey-body,.tip-box{padding:24px}
+  .route-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px}
+  .route-step{text-align:center;min-width:0}
+  .route-icon{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;margin:0 auto 8px;background:#1f1d18;color:#f3b293;border:1px solid var(--clay)}
+  .route-step strong{display:block;font-family:'Fraunces',serif;font-size:1.03rem}
+  .route-step span{display:block;font-size:.86rem;color:var(--ink-soft);line-height:1.25}
+  section{margin-top:54px}
   .sec-head{display:flex;gap:16px;align-items:baseline;border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:18px}
-  .sec-num{font-family:'Fraunces',serif;color:var(--clay-deep);font-weight:700}
-  .sec-head h2{font-size:1.65rem;margin:0}
+  .sec-num{font-family:'Fraunces',serif;color:var(--clay-deep);font-weight:800}
+  .sec-head h2{font-size:1.75rem;margin:0}
   .item{display:flex;gap:16px;margin:22px 0}
   .badge{flex:0 0 auto;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--clay-tint);border:1px solid #ebcdbd;color:var(--clay-deep)}
   .item h3{font-family:'Hanken Grotesk',sans-serif;font-size:1.05rem;margin:0 0 4px}
   .item p{margin:0;color:var(--ink-soft)}
-  .tips{border-left:3px solid var(--clay)}
-  .tips h2{font-size:1.35rem;margin:0 0 12px}
+  .agenda-progress{display:flex;align-items:center;gap:10px;margin:0 0 22px}
+  .agenda-count{font-weight:800;color:var(--clay-deep)}
+  .agenda-track{height:10px;flex:1;max-width:180px;border-radius:999px;background:var(--clay-tint);overflow:hidden}
+  .agenda-fill{height:100%;width:0;background:var(--clay-deep);border-radius:inherit;transition:width .2s}
+  .agenda-list{display:grid;gap:14px}
+  .agenda-card{appearance:none;border:1px solid var(--line);border-radius:14px;background:#fffdf8;color:var(--ink);font:inherit;text-align:left;padding:16px 18px;display:grid;grid-template-columns:84px 1fr auto;gap:16px;align-items:start;cursor:pointer}
+  .agenda-card[aria-pressed="true"]{border-color:var(--green);box-shadow:0 0 0 3px rgba(58,107,76,.14)}
+  .agenda-time{font-family:'Fraunces',serif;font-weight:800;color:var(--clay-deep)}
+  .agenda-title{font-weight:800}
+  .agenda-duration{font-size:.82rem;font-weight:800;color:#fff;background:#2f1f18;border-radius:999px;padding:4px 9px;white-space:nowrap}
+  .tip-box{border-left:4px solid var(--clay)}
+  .tip-box h2{font-size:1.35rem;margin:0 0 12px}
+  .tip-box ul{margin:0;padding-left:20px}
   .empty{border:1px dashed var(--line);border-radius:14px;padding:28px;color:var(--ink-soft)}
-  @media (max-width:640px){.page{padding:42px 22px 58px}.time-row{grid-template-columns:1fr}.hero{padding:18px}}
+  .uploaded-frame{display:block;width:100%;height:80vh;border:0;background:white}
+  .uploaded-note{padding:16px 20px;border-bottom:1px solid var(--line);color:var(--ink-soft);font-size:.94rem}
+  .toast{position:fixed;left:50%;bottom:24px;z-index:1000;transform:translate(-50%,8px);opacity:0;background:#1f1d18;color:#fffaf2;border-radius:10px;padding:10px 14px;font-size:13px;font-weight:700;transition:opacity .2s,transform .2s;pointer-events:none}
+  .toast.show{opacity:1;transform:translate(-50%,0)}
+  @media (max-width:700px){
+    .page{padding:42px 22px 58px}
+    .route-grid{grid-template-columns:1fr 1fr}
+    .agenda-card{grid-template-columns:1fr;gap:6px}
+    .agenda-duration{width:max-content}
+  }
+  @media print{
+    body{background:white}
+    .page{max-width:none;border:0;padding:24px;background:white}
+    .back,.header-actions,.toast{display:none}
+    .hero,.journey,.tip-box,.uploaded-shell{box-shadow:none;break-inside:avoid}
+    section,.item,.agenda-card{break-inside:avoid}
+    .uploaded-frame{height:92vh}
+  }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
 </head>
@@ -51,51 +86,286 @@
   <a class="back" href="../">All guides</a>
   <div class="empty">Loading saved guide...</div>
 </article>
+<div class="toast" id="toast"></div>
 <script>
 const SUPABASE_URL = 'https://hkosestllbzvwqzxgkvk.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_5VNqmyvhJ2O7nbhHSp2EBA_DtNuuzGb';
 const page = document.getElementById('page');
+const toastEl = document.getElementById('toast');
+let client;
+let currentRow;
+
 function esc(value){return String(value || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-function icon(){return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 2v20M2 12h20"/></svg>'}
-function hero(){
-  return `<div class="hero" aria-hidden="true"><svg viewBox="0 0 700 250" role="img"><defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="#cfe0d3"/><stop offset="1" stop-color="#f1c6ad"/></linearGradient></defs><rect width="700" height="250" fill="url(#g)"/><path d="M0 176c84-34 142-22 214-34 96-16 147-68 252-48 73 14 121 59 234 36v120H0z" fill="#86a878" opacity=".8"/><path d="M70 206c88-20 155-10 238-20 113-13 180-52 322-25v89H70z" fill="#527a58" opacity=".65"/><path d="M355 250c7-62 44-106 128-132 33-10 68-14 105-12-62 24-105 62-130 144z" fill="#f7e7ca"/><circle cx="600" cy="58" r="27" fill="#e6a47d" opacity=".8"/></svg></div>`;
+function list(value){return Array.isArray(value) ? value.filter(Boolean) : [];}
+function text(value, fallback){const out = String(value || '').replace(/\s+/g,' ').trim(); return out || fallback || '';}
+function slugify(value){return String(value || 'trip-guide').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,70) || 'trip-guide';}
+function icon(path){return `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${path}</svg>`;}
+function plusIcon(){return icon('<path d="M12 5v14M5 12h14"/>');}
+function carIcon(){return icon('<path d="M6 17h12M7 17l1.5-5h7L17 17M8 17a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM20 17a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"/>');}
+function mapIcon(){return icon('<path d="M12 21s7-5.3 7-12a7 7 0 1 0-14 0c0 6.7 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/>');}
+function shareIcon(){return icon('<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/>');}
+function pdfIcon(){return icon('<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 15h8M8 18h5"/>');}
+function toast(message){toastEl.textContent = message; toastEl.classList.add('show'); clearTimeout(toastEl._t); toastEl._t = setTimeout(()=>toastEl.classList.remove('show'), 1800);}
+
+function makeThumbnail(title, subtitle){
+  const safeTitle = esc(title).slice(0, 42);
+  const safeSub = esc(subtitle || 'Trip Guide').slice(0, 54);
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540"><defs><linearGradient id="g" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#3a6b4c"/><stop offset="1" stop-color="#d9a665"/></linearGradient></defs><rect width="960" height="540" fill="url(#g)"/><circle cx="760" cy="110" r="64" fill="#fff8ec" opacity=".38"/><path d="M0 390c126-72 252-48 386-86 152-43 280-56 574 36v200H0z" fill="#fff8ec" opacity=".32"/><text x="64" y="108" fill="#fff8ec" font-family="Georgia,serif" font-size="40" font-weight="700">Trip Guide</text><text x="64" y="382" fill="#fff8ec" font-family="Georgia,serif" font-size="62" font-weight="700">${safeTitle}</text><text x="66" y="438" fill="#fff8ec" font-family="Arial,sans-serif" font-size="27" opacity=".9">${safeSub}</text></svg>`;
+  return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
 }
-function render(row){
-  const g = row.guide_data || {};
-  document.title = (row.title || g.title || 'Generated Trip') + ' | Trip Guides';
-  const facts = [g.trip_type, g.distance, g.duration, g.season].filter(Boolean);
-  page.innerHTML = `
+
+function normalizeGuide(row){
+  const guide = row.guide_data || {};
+  const title = text(guide.title || row.title, 'Saved trip');
+  const location = text(guide.location || row.destination, title);
+  const summary = text(guide.summary || guide.intro, 'A custom guide saved to your trip shelf.');
+  const sections = list(guide.sections).map(section => ({
+    heading: text(section.heading, 'Trip details'),
+    items: list(section.items).map(item => ({
+      title: text(item.title, 'Stop'),
+      body: text(item.body || item.description, '')
+    })).filter(item => item.body || item.title)
+  })).filter(section => section.items.length);
+  const fallbackSections = [
+    {heading:'What to see', items:[{title:'Main visit plan', body:summary}]},
+    {heading:'Pacing the day', items:[{title:'Keep it comfortable', body:'Build in time for breaks, food, washrooms, and a slower pace between stops.'}]},
+    {heading:'Practical notes', items:[{title:'Before you go', body:'Check hours, tickets, parking, weather, and accessibility details before leaving.'}]}
+  ];
+  while (sections.length < 3) sections.push(fallbackSections[sections.length]);
+  const itinerary = list(guide.itinerary).map(stop => ({
+    time: text(stop.time, ''),
+    title: text(stop.title, 'Stop'),
+    duration: text(stop.duration, ''),
+    description: text(stop.description || stop.body, '')
+  })).filter(stop => stop.title || stop.description);
+  return Object.assign({}, guide, {
+    title,
+    location,
+    summary,
+    intro: text(guide.intro, summary),
+    trip_type: text(guide.trip_type, guide.type === 'uploaded_html' ? 'Uploaded guide' : 'Day trip'),
+    distance: text(guide.distance, ''),
+    duration: text(guide.duration, 'Day guide'),
+    season: text(guide.season, 'Saved'),
+    tags: list(guide.tags),
+    getting_there: text(guide.getting_there, summary),
+    thumbnail: guide.thumbnail || guide.cover_image || guide.photo || makeThumbnail(title, location),
+    route: list(guide.route),
+    sections: sections.slice(0, 4),
+    itinerary,
+    tips: list(guide.tips).map(tip => typeof tip === 'string' ? tip : tip.text || tip.title).filter(Boolean)
+  });
+}
+
+function mapsUrl(guide, row){
+  const destination = guide.location || row.destination || guide.title || row.title;
+  return 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(destination) + '&travelmode=driving';
+}
+
+function headerHtml(row, guide){
+  const visited = row.visited ? 'true' : 'false';
+  return `
     <a class="back" href="../">All guides</a>
-    <p class="eyebrow">${esc(g.location || row.destination || 'Saved trip')}</p>
-    <h1>${esc(g.title || row.title)}</h1>
-    <p class="dek">${esc(g.summary || '')}</p>
-    <div class="actions">
-      <a class="btn" href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(row.destination || g.location || g.title || row.title)}&travelmode=driving" target="_blank" rel="noopener">Open in Google Maps</a>
-      <button class="btn" type="button" data-visited aria-pressed="${row.visited ? 'true' : 'false'}">${row.visited ? 'Visited' : 'Mark visited'}</button>
-    </div>
-    ${hero()}
-    <div class="facts">${facts.map(f => `<span class="chip">${esc(f)}</span>`).join('')}</div>
-    <div class="journey"><div class="journey-head">Getting there</div><div class="journey-body"><p>${esc(g.getting_there || '')}</p></div></div>
-    ${(g.sections || []).map((section, i) => `<section><div class="sec-head"><span class="sec-num">${String(i+1).padStart(2,'0')}</span><h2>${esc(section.heading)}</h2></div>${(section.items || []).map(item => `<div class="item"><div class="badge">${icon()}</div><div><h3>${esc(item.title)}</h3><p>${esc(item.body)}</p></div></div>`).join('')}</section>`).join('')}
-    <section><div class="sec-head"><span class="sec-num">04</span><h2>Your day, hour by hour</h2></div><div class="timeline">${(g.itinerary || []).map(stop => `<div class="time-row"><div class="time">${esc(stop.time)}</div><div><strong>${esc(stop.title)}</strong><br><span>${esc(stop.description)}</span></div></div>`).join('')}</div></section>
-    <div class="tips"><h2>Practical tips</h2>${(g.tips || []).map(t => `<p>${esc(t)}</p>`).join('')}</div>`;
-  page.querySelector('[data-visited]').onclick = () => toggleVisited(row);
+    <p class="eyebrow">${esc(guide.location || 'Saved trip')}</p>
+    <h1>${esc(guide.title || row.title)}</h1>
+    <p class="dek">${esc(guide.summary || '')}</p>
+    <div class="header-actions">
+      <a class="share-btn" href="${mapsUrl(guide, row)}" target="_blank" rel="noopener">${mapIcon()}<span>Open in Google Maps</span></a>
+      <button class="share-btn" type="button" data-share>${shareIcon()}<span class="share-label">Share</span></button>
+      <button class="share-btn" type="button" data-pdf>${pdfIcon()}<span>PDF</span></button>
+      <button class="share-btn" type="button" data-visited aria-pressed="${visited}">${plusIcon()}<span>${row.visited ? 'Visited' : 'Mark visited'}</span></button>
+    </div>`;
 }
+
+function heroHtml(guide){
+  if (guide.thumbnail) return `<div class="hero"><img src="${esc(guide.thumbnail)}" alt="${esc(guide.title)} thumbnail"></div>`;
+  return `<div class="hero" aria-hidden="true"><svg viewBox="0 0 800 300"><rect width="800" height="300" fill="#d7e4db"/><path d="M0 205c96-48 170-34 264-58 130-34 204-74 362-28 62 18 106 45 174 44v137H0z" fill="#86a878"/><path d="M330 300c18-82 72-139 176-170 44-13 88-16 132-10-86 28-144 88-174 180z" fill="#f7e7ca"/><circle cx="682" cy="62" r="30" fill="#e6a47d"/></svg></div>`;
+}
+
+function factsHtml(guide){
+  const facts = [guide.trip_type, guide.distance, guide.duration, guide.season].filter(Boolean);
+  return `<div class="facts">${facts.map(fact => `<span class="fact">${plusIcon()}${esc(fact)}</span>`).join('')}</div>`;
+}
+
+function routeHtml(guide){
+  const route = guide.route.length ? guide.route : [
+    {time:'Start', label:'Leave', detail:guide.location},
+    {time:'Arrive', label:'Get oriented', detail:'Tickets, parking, washrooms'},
+    {time:'Visit', label:'Main stops', detail:'Follow the guide at a relaxed pace'},
+    {time:'Return', label:'Head home', detail:'Leave buffer time'}
+  ];
+  return `<div class="route-grid">${route.slice(0, 4).map(step => `
+    <div class="route-step">
+      <div class="route-icon">${carIcon()}</div>
+      <strong>${esc(step.time || step.label || '')}</strong>
+      <span>${esc(step.label || step.detail || '')}</span>
+    </div>`).join('')}</div>`;
+}
+
+function sectionsHtml(guide){
+  return guide.sections.map((section, index) => `
+    <section>
+      <div class="sec-head"><span class="sec-num">${String(index + 1).padStart(2, '0')}</span><h2>${esc(section.heading)}</h2></div>
+      ${section.items.map(item => `<div class="item"><div class="badge">${plusIcon()}</div><div><h3>${esc(item.title)}</h3><p>${esc(item.body)}</p></div></div>`).join('')}
+    </section>`).join('');
+}
+
+function itineraryHtml(guide){
+  const stops = guide.itinerary.length ? guide.itinerary : [
+    {time:'Morning', title:'Start the visit', duration:'', description:'Use the sections above as the day plan.'},
+    {time:'Midday', title:'Break for food', duration:'', description:'Keep the pace easy and leave room for rest.'},
+    {time:'Afternoon', title:'Wrap up', duration:'', description:'Finish with the easiest stop or a quiet return.'}
+  ];
+  const number = String(Math.min(guide.sections.length + 1, 9)).padStart(2, '0');
+  return `<section>
+    <div class="sec-head"><span class="sec-num">${number}</span><h2>Your day, hour by hour</h2></div>
+    <div class="agenda-progress"><span class="agenda-count" data-count>0 / ${stops.length}</span><div class="agenda-track"><div class="agenda-fill" data-fill></div></div></div>
+    <div class="agenda-list">
+      ${stops.map((stop, index) => `<button class="agenda-card" type="button" aria-pressed="false" data-agenda="${index}">
+        <span class="agenda-time">${esc(stop.time)}</span>
+        <span><span class="agenda-title">${esc(stop.title)}</span><br><span>${esc(stop.description)}</span></span>
+        ${stop.duration ? `<span class="agenda-duration">${esc(stop.duration)}</span>` : ''}
+      </button>`).join('')}
+    </div>
+  </section>`;
+}
+
+function tipsHtml(guide){
+  const tips = guide.tips.length ? guide.tips : ['Check opening hours and tickets before leaving.', 'Bring water, snacks, weather layers, and a phone charger.', 'Leave a little buffer between stops.'];
+  return `<div class="tip-box"><h2>Practical tips</h2><ul>${tips.map(tip => `<li>${esc(tip)}</li>`).join('')}</ul></div>`;
+}
+
+function renderUploaded(row, guide){
+  document.title = guide.title + ' | Trip Guides';
+  page.innerHTML = `
+    ${headerHtml(row, guide)}
+    ${heroHtml(guide)}
+    ${factsHtml(guide)}
+    <div class="uploaded-shell">
+      <div class="uploaded-note">Uploaded HTML preview. Scripts are blocked for safety.</div>
+      <iframe class="uploaded-frame" title="${esc(guide.title)} uploaded guide" sandbox=""></iframe>
+    </div>`;
+  page.querySelector('.uploaded-frame').srcdoc = row.guide_data.html || '<p>Uploaded guide content is empty.</p>';
+  attachActions(row, guide);
+}
+
+function renderGenerated(row, guide){
+  document.title = guide.title + ' | Trip Guides';
+  page.innerHTML = `
+    ${headerHtml(row, guide)}
+    ${heroHtml(guide)}
+    <p class="intro">${esc(guide.intro || guide.summary)}</p>
+    ${factsHtml(guide)}
+    <div class="journey">
+      <div class="journey-head">Getting there</div>
+      <div class="journey-body">
+        ${routeHtml(guide)}
+        <p>${esc(guide.getting_there)}</p>
+      </div>
+    </div>
+    ${sectionsHtml(guide)}
+    ${itineraryHtml(guide)}
+    ${tipsHtml(guide)}`;
+  attachActions(row, guide);
+  attachAgenda();
+}
+
+function attachAgenda(){
+  const cards = [...page.querySelectorAll('[data-agenda]')];
+  const count = page.querySelector('[data-count]');
+  const fill = page.querySelector('[data-fill]');
+  function update(){
+    const done = cards.filter(card => card.getAttribute('aria-pressed') === 'true').length;
+    if (count) count.textContent = `${done} / ${cards.length}`;
+    if (fill) fill.style.width = cards.length ? `${(done / cards.length) * 100}%` : '0%';
+  }
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      card.setAttribute('aria-pressed', card.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+      update();
+    });
+  });
+  update();
+}
+
+async function copyLink(url){
+  if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(url);
+  const field = document.createElement('textarea');
+  field.value = url;
+  field.style.position = 'fixed';
+  field.style.left = '-9999px';
+  document.body.appendChild(field);
+  field.select();
+  document.execCommand('copy');
+  field.remove();
+}
+
+async function shareGuide(button, guide){
+  const url = location.href;
+  try {
+    if (navigator.share) {
+      await navigator.share({title: guide.title, url});
+      return;
+    }
+    await copyLink(url);
+    button.classList.add('copied');
+    toast('Link copied');
+  } catch (error) {
+    if (!error || error.name !== 'AbortError') {
+      await copyLink(url);
+      button.classList.add('copied');
+      toast('Link copied');
+    }
+  }
+  clearTimeout(button._timer);
+  button._timer = setTimeout(() => button.classList.remove('copied'), 1600);
+}
+
+function printPdf(guide){
+  const oldTitle = document.title;
+  document.title = slugify(guide.title) + '-guide';
+  window.print();
+  setTimeout(() => { document.title = oldTitle; }, 400);
+}
+
 async function toggleVisited(row){
   const next = !row.visited;
-  const {data,error} = await client.from('user_trips').update({visited:next,visited_at:next ? new Date().toISOString() : null}).eq('id', row.id).select().single();
-  if(!error) render(data);
+  const {data,error} = await client
+    .from('user_trips')
+    .update({visited:next,visited_at:next ? new Date().toISOString() : null})
+    .eq('id', row.id)
+    .select()
+    .single();
+  if (!error) {
+    currentRow = data;
+    const guide = normalizeGuide(data);
+    if (guide.type === 'uploaded_html') renderUploaded(data, guide);
+    else renderGenerated(data, guide);
+  }
 }
-let client;
+
+function attachActions(row, guide){
+  page.querySelector('[data-share]').onclick = event => shareGuide(event.currentTarget, guide);
+  page.querySelector('[data-pdf]').onclick = () => printPdf(guide);
+  page.querySelector('[data-visited]').onclick = () => toggleVisited(row);
+}
+
+function showMessage(message){
+  page.innerHTML = `<a class="back" href="../">All guides</a><div class="empty">${esc(message)}</div>`;
+}
+
 window.addEventListener('DOMContentLoaded', async () => {
   client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   const id = new URLSearchParams(location.search).get('id');
-  if(!id){page.innerHTML = '<a class="back" href="../">All guides</a><div class="empty">Missing trip id.</div>';return;}
+  if (!id) return showMessage('Missing trip id.');
   const {data:{session}} = await client.auth.getSession();
-  if(!session){page.innerHTML = '<a class="back" href="../">All guides</a><div class="empty">Sign in from the All guides page to open this saved trip.</div>';return;}
+  if (!session) return showMessage('Sign in from the All guides page to open this saved trip.');
   const {data,error} = await client.from('user_trips').select('*').eq('id', id).single();
-  if(error){page.innerHTML = '<a class="back" href="../">All guides</a><div class="empty">Could not load this trip.</div>';return;}
-  render(data);
+  if (error || !data) return showMessage('Could not load this trip.');
+  currentRow = data;
+  const guide = normalizeGuide(data);
+  if (guide.type === 'uploaded_html') renderUploaded(data, guide);
+  else renderGenerated(data, guide);
 });
 </script>
 </body>

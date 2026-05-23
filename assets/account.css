@@ -4,8 +4,8 @@
 .tg-account-copy strong{font-size:14px}
 .tg-account-copy span{color:var(--muted);font-size:13px}
 .tg-account-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
-.tg-account-actions input,.tg-ai-form input,.tg-ai-form textarea{border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);font:inherit;padding:10px 12px;min-width:220px}
-.tg-account-actions input:focus,.tg-ai-form input:focus,.tg-ai-form textarea:focus{outline:3px solid var(--accent-soft);border-color:var(--accent)}
+.tg-account-actions input,.tg-ai-form input,.tg-ai-form textarea,.tg-upload-form input{border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);font:inherit;padding:10px 12px;min-width:220px}
+.tg-account-actions input:focus,.tg-ai-form input:focus,.tg-ai-form textarea:focus,.tg-upload-form input:focus{outline:3px solid var(--accent-soft);border-color:var(--accent)}
 .tg-small-btn,.tg-primary-btn,.tg-cloud-btn{appearance:none;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);font:600 13px Inter,system-ui,sans-serif;padding:10px 12px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;text-decoration:none}
 .tg-primary-btn{background:var(--accent,#3a6b4c);border-color:var(--accent,#3a6b4c);color:#fff}
 .tg-small-btn:disabled,.tg-primary-btn:disabled,.tg-cloud-btn:disabled{opacity:.6;cursor:not-allowed}
@@ -16,21 +16,25 @@
 .tg-panel p{margin:0;color:var(--muted);font-size:14px}
 .tg-saved-list{display:grid;gap:10px;margin-top:14px}
 .tg-saved-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--bg)}
+.tg-saved-main{display:flex;align-items:center;gap:12px;min-width:0}
+.tg-saved-thumb{width:54px;height:54px;border-radius:10px;border:1px solid var(--line);background:linear-gradient(135deg,var(--accent-soft),var(--chip));overflow:hidden;flex:0 0 auto}
+.tg-saved-thumb img{width:100%;height:100%;object-fit:cover;display:block}
 .tg-saved-title{font-weight:700}
 .tg-saved-meta{font-size:12px;color:var(--muted)}
 .tg-saved-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
-.tg-ai-form{display:grid;gap:10px;margin-top:14px}
-.tg-ai-form .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tg-ai-form,.tg-upload-form{display:grid;gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.tg-ai-form .row,.tg-upload-form .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .tg-ai-form textarea{min-height:90px;resize:vertical}
-.tg-ai-status{font-size:13px;color:var(--muted);min-height:20px}
+.tg-upload-form input[type="file"]{min-width:0}
+.tg-ai-status,.tg-upload-status{font-size:13px;color:var(--muted);min-height:20px}
 .tg-guide-account{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 30px}
 .tg-guide-account .tg-cloud-btn{background:#fffdf8}
-[data-theme="dark"] .tg-account-bar,[data-theme="dark"] .tg-panel,[data-theme="dark"] .tg-account-actions input,[data-theme="dark"] .tg-ai-form input,[data-theme="dark"] .tg-ai-form textarea,[data-theme="dark"] .tg-small-btn,[data-theme="dark"] .tg-cloud-btn{background:var(--paper);border-color:var(--line);color:var(--ink)}
+[data-theme="dark"] .tg-account-bar,[data-theme="dark"] .tg-panel,[data-theme="dark"] .tg-account-actions input,[data-theme="dark"] .tg-ai-form input,[data-theme="dark"] .tg-ai-form textarea,[data-theme="dark"] .tg-upload-form input,[data-theme="dark"] .tg-small-btn,[data-theme="dark"] .tg-cloud-btn{background:var(--paper);border-color:var(--line);color:var(--ink)}
 [data-theme="dark"] .tg-saved-row{background:var(--bg)}
 body[data-tg-theme="dark"] .tg-guide-account .tg-cloud-btn{background:#1f1d18;border-color:#343025;color:#f1ece1}
 body[data-tg-theme="dark"] .tg-guide-account .tg-cloud-btn[aria-pressed="true"]{background:#6e9e5c;border-color:#6e9e5c;color:#fff}
 @media (max-width:720px){
-  .tg-account-bar,.tg-saved-row,.tg-ai-form .row{grid-template-columns:1fr}
+  .tg-account-bar,.tg-saved-row,.tg-ai-form .row,.tg-upload-form .row{grid-template-columns:1fr}
   .tg-account-actions,.tg-saved-actions{justify-content:flex-start}
   .tg-account-actions input{width:100%;min-width:0}
 }
