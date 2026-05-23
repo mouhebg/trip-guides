@@ -91,6 +91,21 @@
   .cover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(0,0,0,.18));pointer-events:none}
   .credit{font-size:11px;color:var(--muted);margin-top:8px}
   .credit a{color:inherit;text-decoration:underline;text-decoration-color:rgba(0,0,0,.2)}
+  [data-theme="dark"] .card{box-shadow:0 1px 2px rgba(0,0,0,.44), 0 16px 34px rgba(0,0,0,.28)}
+  [data-theme="dark"] .card:hover{box-shadow:0 4px 10px rgba(0,0,0,.32), 0 22px 46px rgba(0,0,0,.42)}
+  [data-theme="dark"] .cover::after{background:linear-gradient(180deg,transparent 48%,rgba(0,0,0,.42))}
+  [data-theme="dark"] .cover .badge,
+  [data-theme="dark"] .cover.has-photo .badge,
+  [data-theme="dark"] .fav,
+  [data-theme="dark"] .share-card{
+    background:rgba(28,27,22,.88);
+    border:1px solid rgba(241,236,225,.16);
+    color:var(--ink);
+    backdrop-filter:saturate(130%) blur(6px);
+  }
+  [data-theme="dark"] .fav[aria-pressed="true"] svg{fill:#ff6b85;color:#ff6b85}
+  [data-theme="dark"] .share-card.copied{background:var(--accent);border-color:var(--accent);color:#102016}
+  [data-theme="dark"] .credit a{text-decoration-color:rgba(241,236,225,.34)}
 </style>
 </head>
 <body>
