@@ -83,12 +83,36 @@
     setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),300); }, 1800);
   }
 
+  function pdfTitle(){
+    const path = location.pathname.toLowerCase();
+    if (path.includes('parc-omega')) return 'parc-omega-guide';
+    if (path.includes('upper-canada-village')) return 'upper-canada-village-guide';
+    return (document.title || 'trip-guide')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '') || 'trip-guide';
+  }
+
+  function savePdf(){
+    const oldTitle = document.title;
+    let restored = false;
+    function restoreTitle(){
+      if (restored) return;
+      restored = true;
+      document.title = oldTitle;
+    }
+    document.title = pdfTitle();
+    window.addEventListener('afterprint', restoreTitle, {once:true});
+    window.addEventListener('focus', () => window.setTimeout(restoreTitle, 500), {once:true});
+    window.print();
+  }
+
   actions.addEventListener('click', async e => {
     const btn = e.target.closest('[data-act]'); if (!btn) return;
     const act = btn.dataset.act;
     if (act === 'theme') toggleTheme();
     if (act === 'top') window.scrollTo({top:0, behavior:'smooth'});
-    if (act === 'pdf') window.print();
+    if (act === 'pdf') savePdf();
     if (act === 'share') {
       const data = {title: document.title, url: location.href};
       try {

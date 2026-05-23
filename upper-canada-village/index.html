@@ -63,12 +63,14 @@
     font-family:'Fraunces', serif;font-style:italic;font-weight:400;font-size:1.3rem;
     color:var(--ink-soft);margin:0 0 30px;
   }
+  .header-actions{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 30px;}
   .share-btn{
     appearance:none;-webkit-appearance:none;display:inline-flex;align-items:center;gap:8px;
     margin:0 0 30px;border:1px solid var(--line);border-radius:999px;background:#FFFDF8;
     color:var(--ink);padding:9px 15px 9px 12px;font:inherit;font-size:.92rem;font-weight:600;
     cursor:pointer;transition:border-color .18s ease, background .18s ease, color .18s ease, box-shadow .18s ease;
   }
+  .header-actions .share-btn{margin:0;text-decoration:none;}
   .share-btn svg{width:18px;height:18px;color:var(--clay-deep);flex:0 0 auto;}
   .share-btn:hover,.share-btn:focus-visible{border-color:var(--clay);background:var(--clay-tint);outline:none;box-shadow:0 0 0 3px rgba(204,120,92,.18);}
   .share-btn.copied{border-color:#6E9E5C;background:#EDF5EA;color:#3D6A33;}
@@ -206,12 +208,12 @@
     .ag-item.done .ag-check{background:#fff;}
     .ag-item.done .ag-check svg{opacity:0;}
     .ag-check{border-color:#999;}
-    .share-btn{display:none;}
+    .header-actions,.share-btn{display:none;}
   }
 
   </style>
-  <link rel="stylesheet" href="../assets/enhance.css?v=pdf-export">
-  <script src="../assets/enhance.js?v=pdf-export" defer></script>
+  <link rel="stylesheet" href="../assets/enhance.css?v=maps-pdf">
+  <script src="../assets/enhance.js?v=maps-pdf" defer></script>
 </head>
 <body>
 
@@ -221,10 +223,16 @@
       <p class="eyebrow reveal" style="animation-delay:.05s">Ottawa Region · Day Trip</p>
       <h1 class="reveal" style="animation-delay:.12s">Upper Canada Village</h1>
       <p class="dek reveal" style="animation-delay:.2s">A gentle day in the 1860s, paced for time with your grandfather</p>
-      <button class="share-btn reveal" style="animation-delay:.24s" type="button" data-share-title="Upper Canada Village" aria-label="Share Upper Canada Village guide" onclick="shareTrip(this)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.7l6.8-4.4M8.6 13.3l6.8 4.4"/></svg>
-        <span class="share-label">Share</span>
-      </button>
+      <div class="header-actions reveal" style="animation-delay:.24s">
+        <a class="share-btn" href="https://www.google.com/maps/dir/?api=1&destination=Upper%20Canada%20Village%2C%20Morrisburg%2C%20ON&travelmode=driving" target="_blank" rel="noopener" aria-label="Open Upper Canada Village directions in Google Maps">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-4.4 7-11a7 7 0 1 0-14 0c0 6.6 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+          <span>Open in Google Maps</span>
+        </a>
+        <button class="share-btn" type="button" data-share-title="Upper Canada Village" aria-label="Share Upper Canada Village guide" onclick="shareTrip(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.7l6.8-4.4M8.6 13.3l6.8 4.4"/></svg>
+          <span class="share-label">Share</span>
+        </button>
+      </div>
     </header>
 
     <!-- Hero illustration -->
