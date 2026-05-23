@@ -1,6 +1,6 @@
 /* Trip Guides — enhancement layer
    Adds: dark mode (shared with homepage), reading progress bar, sticky TOC,
-   persistent itinerary checklist, share/print/back-to-top, "Back to all guides" pill. */
+   persistent itinerary checklist, share/PDF/back-to-top, "Back to all guides" pill. */
 (function(){
   'use strict';
   const STORAGE_THEME = 'tg-theme';
@@ -57,7 +57,7 @@
     headings.forEach(h => obs.observe(h));
   }
 
-  // --- Floating actions: theme / share / print / top ---
+  // --- Floating actions: theme / share / PDF / top ---
   const actions = document.createElement('div');
   actions.className = 'tg-actions';
   actions.innerHTML = `
@@ -67,8 +67,8 @@
     <button class="tg-btn" data-act="share" title="Share / copy link" aria-label="Share or copy link">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>
     </button>
-    <button class="tg-btn" data-act="print" title="Print this guide" aria-label="Print this guide">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
+    <button class="tg-btn" data-act="pdf" title="Save as PDF" aria-label="Save as PDF">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v5h4"/><path d="M8.8 16.2h1.2a1.2 1.2 0 0 0 0-2.4H8.8v4.4"/><path d="M12.5 13.8v4.4h1.1a1.8 1.8 0 0 0 0-3.6h-1.1"/><path d="M16.5 18.2v-4.4h2.2"/><path d="M16.5 16h1.8"/></svg>
     </button>
     <button class="tg-btn" data-act="top" title="Back to top" aria-label="Back to top">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
@@ -88,7 +88,7 @@
     const act = btn.dataset.act;
     if (act === 'theme') toggleTheme();
     if (act === 'top') window.scrollTo({top:0, behavior:'smooth'});
-    if (act === 'print') window.print();
+    if (act === 'pdf') window.print();
     if (act === 'share') {
       const data = {title: document.title, url: location.href};
       try {

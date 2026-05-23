@@ -78,9 +78,15 @@ body[data-tg-theme="dark"] .tl-dot{background:#33231b !important;border-color:#6
 body[data-tg-theme="dark"] .ag-depart .ag-desc{color:#d6aa95 !important}
 body[data-tg-theme="dark"] img,body[data-tg-theme="dark"] svg{filter:brightness(.92)}
 
-/* Print: hide UI chrome */
+@page{margin:12mm}
+
+/* PDF export: hide UI chrome and avoid splitting cards across pages */
 @media print{
   .tg-progress,.tg-back,.tg-toc,.tg-actions,.tg-toast{display:none !important}
   .tg-progress-chip{display:none}
   body{background:white !important;color:black !important}
+  .page{max-width:none !important;border:0 !important;box-shadow:none !important;padding:0 !important}
+  .hero,.facts,.journey,.tips,.item,.ag-item,.ag-depart,.closing{break-inside:avoid;page-break-inside:avoid}
+  .journey-head,.sec-head{break-after:avoid;page-break-after:avoid}
+  .journey{break-before:auto}
 }
