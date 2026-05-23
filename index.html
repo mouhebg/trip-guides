@@ -73,6 +73,11 @@
   .empty{text-align:center;padding:60px 20px;color:var(--muted);border:1px dashed var(--line);border-radius:var(--radius)}
   footer.page{border-top:1px solid var(--line);padding:30px 0;font-size:13px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
   @media print{.toolbar,.chips,.nav-actions,.fav{display:none}.card{break-inside:avoid;box-shadow:none;border:1px solid #ccc}body{background:white}}
+  .cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+  .cover.has-photo .badge{background:rgba(255,255,255,.95);backdrop-filter:saturate(140%) blur(2px)}
+  .cover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(0,0,0,.18));pointer-events:none}
+  .credit{font-size:11px;color:var(--muted);margin-top:8px}
+  .credit a{color:inherit;text-decoration:underline;text-decoration-color:rgba(0,0,0,.2)}
 </style>
 </head>
 <body>
@@ -120,8 +125,8 @@
 </footer>
 <script>
   const TRIPS = [
-    {id:"parc-omega",href:"./parc-omega/",title:"Parc Oméga",location:"Montebello, Québec",desc:"A wildlife drive-through safari paced for a relaxed day — deer at the window, wolves at 2 PM.",tags:["Wildlife","Family","Accessible","Driving"],distance:120,duration:"Full day",season:"All seasons",added:"2025-05-20",cover:"parc-omega",available:true},
-    {id:"upper-canada-village",href:"./upper-canada-village/",title:"Upper Canada Village",location:"Morrisburg, Ontario",desc:"A gentle day in the 1860s — costumed villagers, horse-drawn rides, and shaded benches at every turn.",tags:["History","Family","Accessible","Walking"],distance:110,duration:"Half day",season:"Summer–Fall",added:"2025-05-22",cover:"upper-canada-village",available:true},
+    {id:"parc-omega",href:"./parc-omega/",title:"Parc Oméga",location:"Montebello, Québec",desc:"A wildlife drive-through safari paced for a relaxed day — deer at the window, wolves at 2 PM.",tags:["Wildlife","Family","Accessible","Driving"],distance:120,duration:"Full day",season:"All seasons",added:"2025-05-20",cover:"parc-omega",available:true,photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/A_Wapiti_%28Elk%29_eats_carrots_from_a_visitor_at_Parc_Omega%2C_a_drive-through_safari_park_in_Montebello%2C_Quebec_%28Canada%29.jpg/960px-A_Wapiti_%28Elk%29_eats_carrots_from_a_visitor_at_Parc_Omega%2C_a_drive-through_safari_park_in_Montebello%2C_Quebec_%28Canada%29.jpg",photoAlt:"An elk eating carrots from a visitor's hand at Parc Oméga",credit:'Photo: <a href="https://commons.wikimedia.org/wiki/User:OnBeyondZebrax">OnBeyondZebrax</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>'},
+    {id:"upper-canada-village",href:"./upper-canada-village/",title:"Upper Canada Village",location:"Morrisburg, Ontario",desc:"A gentle day in the 1860s — costumed villagers, horse-drawn rides, and shaded benches at every turn.",tags:["History","Family","Accessible","Walking"],distance:110,duration:"Half day",season:"Summer–Fall",added:"2025-05-22",cover:"upper-canada-village",available:true,photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Upper_Canada_Village.jpg/960px-Upper_Canada_Village.jpg",photoAlt:"A historic building at Upper Canada Village",credit:'Photo: Jazmin Million, <a href="https://creativecommons.org/licenses/by-sa/2.0">CC BY-SA 2.0</a>'},
     {id:"placeholder-1",href:"#",title:"Coming soon",location:"Ottawa Valley",desc:"A future walking guide — details to follow.",tags:["Nature","Walking"],distance:60,duration:"Half day",season:"Summer",added:"2025-01-01",cover:"placeholder",available:false}
   ];
   const ALL_TAGS = [...new Set(TRIPS.flatMap(t=>t.tags))];
@@ -185,7 +190,8 @@
       if (t.available) a.href = t.href;
       a.className = "card" + (t.available ? "" : " disabled");
       a.innerHTML = `
-        <div class="cover ${t.cover}">
+        <div class="cover ${t.cover}${t.photo ? ' has-photo' : ''}">
+          ${t.photo ? `<img src="${t.photo}" alt="${t.photoAlt || t.title}" loading="lazy">` : ""}
           <span class="badge">${t.available ? "Day Trip" : "Coming soon"}</span>
           ${t.available ? `<button class="fav" aria-pressed="${fav}" data-id="${t.id}" aria-label="Save to favorites" title="Save to favorites">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 1 0-7.8 7.8l8.8 8.8 8.8-8.8a5.5 5.5 0 0 0 0-7.8z"/></svg>
@@ -203,6 +209,7 @@
             <small>${t.distance} km · ${t.duration} · ${t.season}</small>
             <span class="read">${t.available ? "Read guide →" : "Soon"}</span>
           </div>
+          ${t.credit ? `<div class="credit">${t.credit}</div>` : ""}
         </div>`;
       grid.appendChild(a);
     }
