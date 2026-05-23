@@ -69,6 +69,9 @@
   .fav[aria-pressed="true"] svg{fill:#e0354b;color:#e0354b}
   .share-card.copied{background:var(--accent);color:white}
   .body{padding:18px 20px 20px;display:flex;flex-direction:column;gap:10px;flex:1}
+  .trip-summary{display:flex;gap:14px;align-items:flex-start}
+  .trip-thumb{width:66px;height:66px;flex:0 0 66px;border-radius:12px;border:1px solid var(--line);object-fit:cover;background:var(--chip);box-shadow:0 8px 18px rgba(31,29,26,.08)}
+  .trip-main{min-width:0;display:flex;flex-direction:column;gap:8px;flex:1}
   .loc{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}
   .ttl{font-family:Fraunces,serif;font-weight:700;font-size:22px;letter-spacing:-.01em;margin:0}
   .ttl a{color:inherit;text-decoration:none}
@@ -86,8 +89,6 @@
   .copy-toast.show{opacity:1;transform:translate(-50%, 0)}
   footer.page{border-top:1px solid var(--line);padding:30px 0;font-size:13px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
   @media print{.toolbar,.chips,.nav-actions,.card-actions,.copy-toast{display:none}.card{break-inside:avoid;box-shadow:none;border:1px solid #ccc}body{background:white}}
-  .cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-  .cover.has-photo .badge{background:rgba(255,255,255,.95);backdrop-filter:saturate(140%) blur(2px)}
   .cover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(0,0,0,.18));pointer-events:none}
   .credit{font-size:11px;color:var(--muted);margin-top:8px}
   .credit a{color:inherit;text-decoration:underline;text-decoration-color:rgba(0,0,0,.2)}
@@ -95,7 +96,6 @@
   [data-theme="dark"] .card:hover{box-shadow:0 4px 10px rgba(0,0,0,.32), 0 22px 46px rgba(0,0,0,.42)}
   [data-theme="dark"] .cover::after{background:linear-gradient(180deg,transparent 48%,rgba(0,0,0,.42))}
   [data-theme="dark"] .cover .badge,
-  [data-theme="dark"] .cover.has-photo .badge,
   [data-theme="dark"] .fav,
   [data-theme="dark"] .share-card{
     background:rgba(28,27,22,.88);
@@ -103,9 +103,13 @@
     color:var(--ink);
     backdrop-filter:saturate(130%) blur(6px);
   }
+  [data-theme="dark"] .trip-thumb{box-shadow:0 8px 18px rgba(0,0,0,.28)}
   [data-theme="dark"] .fav[aria-pressed="true"] svg{fill:#ff6b85;color:#ff6b85}
   [data-theme="dark"] .share-card.copied{background:var(--accent);border-color:var(--accent);color:#102016}
   [data-theme="dark"] .credit a{text-decoration-color:rgba(241,236,225,.34)}
+  @media (max-width:420px){
+    .trip-thumb{width:58px;height:58px;flex-basis:58px;border-radius:10px}
+  }
 </style>
 </head>
 <body>
@@ -273,17 +277,21 @@
       card.className = "card" + (t.available ? "" : " disabled");
       card.innerHTML = `
         <${coverTag} class="cover-link"${coverHref}>
-          <div class="cover ${t.cover}${t.photo ? ' has-photo' : ''}">
-            ${t.photo ? `<img src="${t.photo}" alt="${t.photoAlt || t.title}" loading="lazy">` : ""}
+          <div class="cover ${t.cover}">
             <span class="badge">${t.available ? "Day Trip" : "Coming soon"}</span>
           </div>
         </${coverTag}>
           <div class="body">
-            <div class="loc">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-7.6 8-13a8 8 0 1 0-16 0c0 5.4 8 13 8 13z"/><circle cx="12" cy="9" r="2.5"/></svg>
-              ${t.location}
+            <div class="trip-summary">
+              ${t.photo ? `<img class="trip-thumb" src="${t.photo}" alt="${t.photoAlt || t.title}" loading="lazy">` : ""}
+              <div class="trip-main">
+                <div class="loc">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-7.6 8-13a8 8 0 1 0-16 0c0 5.4 8 13 8 13z"/><circle cx="12" cy="9" r="2.5"/></svg>
+                  ${t.location}
+                </div>
+                <h2 class="ttl">${title}</h2>
+              </div>
             </div>
-            <h2 class="ttl">${title}</h2>
             <p class="desc">${t.desc}</p>
             <div class="meta">${t.tags.map(x=>`<span class="tag">${x}</span>`).join("")}</div>
             <div class="footer-row">
