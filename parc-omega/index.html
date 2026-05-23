@@ -152,7 +152,16 @@
     .ag-item.done .ag-check svg{opacity:0;}
     .ag-check{border-color:#999;}
   }
-</style>
+
+    /* Real-photo figure */
+    .tg-photo{margin:24px 0 8px;position:relative;border-radius:20px;overflow:hidden;background:var(--surface);box-shadow:0 1px 2px rgba(0,0,0,.04),0 18px 40px rgba(0,0,0,.08)}
+    .tg-photo img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover}
+    .tg-photo figcaption{padding:10px 14px 14px;font-size:13px;color:var(--ink-soft);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .tg-photo figcaption a{color:var(--clay-deep);text-decoration:none;border-bottom:1px solid currentColor}
+    .tg-credit-line{margin:30px 0 0;padding-top:18px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-soft);text-align:center;line-height:1.55}
+    .tg-credit-line a{color:inherit;text-decoration:underline;text-decoration-color:rgba(0,0,0,.25)}
+  
+  </style>
   <link rel="stylesheet" href="../assets/enhance.css">
   <script src="../assets/enhance.js" defer></script>
 </head>
@@ -279,6 +288,17 @@
         </g>
       </svg>
     </div>
+
+    <figure class="tg-photo reveal" style="animation-delay:.3s">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/A_Wapiti_%28Elk%29_eats_carrots_from_a_visitor_at_Parc_Omega%2C_a_drive-through_safari_park_in_Montebello%2C_Quebec_%28Canada%29.jpg/1280px-A_Wapiti_%28Elk%29_eats_carrots_from_a_visitor_at_Parc_Omega%2C_a_drive-through_safari_park_in_Montebello%2C_Quebec_%28Canada%29.jpg"
+           alt="An elk eating carrots from a visitor's hand at Parc Oméga"
+           loading="lazy">
+      <figcaption>
+        <span>An elk taking carrots at the window — the centrepiece of the drive.</span>
+        <span>Photo: <a href="https://commons.wikimedia.org/wiki/File:A_Wapiti_(Elk)_eats_carrots_from_a_visitor_at_Parc_Omega,_a_drive-through_safari_park_in_Montebello,_Quebec_(Canada).jpg">OnBeyondZebrax</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a></span>
+      </figcaption>
+    </figure>
+
 
     <p class="lead reveal" style="animation-delay:.34s">
       Parc Oméga is a rare day trip where most of the experience happens from the comfort of your car. You drive a slow loop through open habitat while elk, deer, bison, and wolves roam freely around you, and a few come right up to the window. For an older visitor it is close to ideal: hours of close wildlife with very little walking, plus two short, accessible trails to stretch your legs whenever you feel like it.
@@ -491,7 +511,8 @@
       A calm, close-up encounter with Canadian wildlife that asks almost nothing of his legs. The kind of outing that delivers a lot of wonder for very little effort, and gives the two of you plenty to talk about on the drive home.
     </p>
 
-  </article>
+      <p class="tg-credit-line">Photography by <a href="https://commons.wikimedia.org/wiki/User:OnBeyondZebrax">OnBeyondZebrax</a> via Wikimedia Commons, licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>. Illustrations and writing original to this guide.</p>
+</article>
 
   <script>
     function refreshNext(){
