@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Generated Trip Guide</title>
+<meta name="description" content="A saved AI-generated trip guide.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#F5EFE6;--surface:#FFFCF6;--ink:#25231F;--ink-soft:#6B665E;--line:#E4DBCB;--line-soft:#EFE7D8;--clay:#CC785C;--clay-deep:#AA5D40;--clay-tint:#F6E4DA;--green:#3A6B4C}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Hanken Grotesk',system-ui,sans-serif;line-height:1.65}
+  .page{max-width:760px;margin:0 auto;background:var(--surface);min-height:100vh;border-left:1px solid var(--line);border-right:1px solid var(--line);padding:56px 44px 72px}
+  .back{display:inline-flex;align-items:center;gap:8px;margin-bottom:28px;border:1px solid var(--line);border-radius:999px;padding:8px 13px;color:var(--ink);text-decoration:none;font-weight:700}
+  .eyebrow{font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--clay-deep);margin:0 0 18px}
+  h1,h2,h3{font-family:'Fraunces',serif;font-weight:600;line-height:1.12}
+  h1{font-size:clamp(2.4rem,7vw,4.4rem);letter-spacing:-.02em;margin:0 0 14px}
+  .dek{font-family:'Fraunces',serif;font-style:italic;font-size:1.25rem;color:var(--ink-soft);margin:0 0 24px}
+  .actions{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:34px}
+  .btn{appearance:none;border:1px solid var(--line);border-radius:999px;background:#fffdf8;color:var(--ink);font:700 14px 'Hanken Grotesk',sans-serif;padding:9px 14px;text-decoration:none;cursor:pointer}
+  .btn[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:#fff}
+  .facts{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0 32px}
+  .chip{border:1px solid var(--line);border-radius:999px;background:#fffdf8;padding:8px 13px;font-size:.94rem}
+  .hero{margin:0 0 34px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:linear-gradient(135deg,#d7e4db,#f5d5bf);padding:32px}
+  .hero svg{display:block;width:100%;height:auto;max-height:240px}
+  .journey,.tips{border:1px solid var(--line);border-radius:14px;background:#fffdf8;margin:38px 0;overflow:hidden}
+  .journey-head{background:var(--clay);color:#fff7ef;font-family:'Fraunces',serif;font-size:1.15rem;padding:15px 24px}
+  .journey-body,.tips{padding:24px}
+  .timeline{display:grid;gap:14px}
+  .time-row{display:grid;grid-template-columns:82px 1fr;gap:16px;padding-bottom:14px;border-bottom:1px solid var(--line-soft)}
+  .time{font-family:'Fraunces',serif;font-weight:700;color:var(--clay-deep)}
+  section{margin-top:48px}
+  .sec-head{display:flex;gap:16px;align-items:baseline;border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:18px}
+  .sec-num{font-family:'Fraunces',serif;color:var(--clay-deep);font-weight:700}
+  .sec-head h2{font-size:1.65rem;margin:0}
+  .item{display:flex;gap:16px;margin:22px 0}
+  .badge{flex:0 0 auto;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--clay-tint);border:1px solid #ebcdbd;color:var(--clay-deep)}
+  .item h3{font-family:'Hanken Grotesk',sans-serif;font-size:1.05rem;margin:0 0 4px}
+  .item p{margin:0;color:var(--ink-soft)}
+  .tips{border-left:3px solid var(--clay)}
+  .tips h2{font-size:1.35rem;margin:0 0 12px}
+  .empty{border:1px dashed var(--line);border-radius:14px;padding:28px;color:var(--ink-soft)}
+  @media (max-width:640px){.page{padding:42px 22px 58px}.time-row{grid-template-columns:1fr}.hero{padding:18px}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+</head>
+<body>
+<article class="page" id="page">
+  <a class="back" href="../">All guides</a>
+  <div class="empty">Loading saved guide...</div>
+</article>
+<script>
+const SUPABASE_URL = 'https://hkosestllbzvwqzxgkvk.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_5VNqmyvhJ2O7nbhHSp2EBA_DtNuuzGb';
+const page = document.getElementById('page');
+function esc(value){return String(value || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function icon(){return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 2v20M2 12h20"/></svg>'}
+function hero(){
+  return `<div class="hero" aria-hidden="true"><svg viewBox="0 0 700 250" role="img"><defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="#cfe0d3"/><stop offset="1" stop-color="#f1c6ad"/></linearGradient></defs><rect width="700" height="250" fill="url(#g)"/><path d="M0 176c84-34 142-22 214-34 96-16 147-68 252-48 73 14 121 59 234 36v120H0z" fill="#86a878" opacity=".8"/><path d="M70 206c88-20 155-10 238-20 113-13 180-52 322-25v89H70z" fill="#527a58" opacity=".65"/><path d="M355 250c7-62 44-106 128-132 33-10 68-14 105-12-62 24-105 62-130 144z" fill="#f7e7ca"/><circle cx="600" cy="58" r="27" fill="#e6a47d" opacity=".8"/></svg></div>`;
+}
+function render(row){
+  const g = row.guide_data || {};
+  document.title = (row.title || g.title || 'Generated Trip') + ' | Trip Guides';
+  const facts = [g.trip_type, g.distance, g.duration, g.season].filter(Boolean);
+  page.innerHTML = `
+    <a class="back" href="../">All guides</a>
+    <p class="eyebrow">${esc(g.location || row.destination || 'Saved trip')}</p>
+    <h1>${esc(g.title || row.title)}</h1>
+    <p class="dek">${esc(g.summary || '')}</p>
+    <div class="actions">
+      <a class="btn" href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(row.destination || g.location || g.title || row.title)}&travelmode=driving" target="_blank" rel="noopener">Open in Google Maps</a>
+      <button class="btn" type="button" data-visited aria-pressed="${row.visited ? 'true' : 'false'}">${row.visited ? 'Visited' : 'Mark visited'}</button>
+    </div>
+    ${hero()}
+    <div class="facts">${facts.map(f => `<span class="chip">${esc(f)}</span>`).join('')}</div>
+    <div class="journey"><div class="journey-head">Getting there</div><div class="journey-body"><p>${esc(g.getting_there || '')}</p></div></div>
+    ${(g.sections || []).map((section, i) => `<section><div class="sec-head"><span class="sec-num">${String(i+1).padStart(2,'0')}</span><h2>${esc(section.heading)}</h2></div>${(section.items || []).map(item => `<div class="item"><div class="badge">${icon()}</div><div><h3>${esc(item.title)}</h3><p>${esc(item.body)}</p></div></div>`).join('')}</section>`).join('')}
+    <section><div class="sec-head"><span class="sec-num">04</span><h2>Your day, hour by hour</h2></div><div class="timeline">${(g.itinerary || []).map(stop => `<div class="time-row"><div class="time">${esc(stop.time)}</div><div><strong>${esc(stop.title)}</strong><br><span>${esc(stop.description)}</span></div></div>`).join('')}</div></section>
+    <div class="tips"><h2>Practical tips</h2>${(g.tips || []).map(t => `<p>${esc(t)}</p>`).join('')}</div>`;
+  page.querySelector('[data-visited]').onclick = () => toggleVisited(row);
+}
+async function toggleVisited(row){
+  const next = !row.visited;
+  const {data,error} = await client.from('user_trips').update({visited:next,visited_at:next ? new Date().toISOString() : null}).eq('id', row.id).select().single();
+  if(!error) render(data);
+}
+let client;
+window.addEventListener('DOMContentLoaded', async () => {
+  client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  const id = new URLSearchParams(location.search).get('id');
+  if(!id){page.innerHTML = '<a class="back" href="../">All guides</a><div class="empty">Missing trip id.</div>';return;}
+  const {data:{session}} = await client.auth.getSession();
+  if(!session){page.innerHTML = '<a class="back" href="../">All guides</a><div class="empty">Sign in from the All guides page to open this saved trip.</div>';return;}
+  const {data,error} = await client.from('user_trips').select('*').eq('id', id).single();
+  if(error){page.innerHTML = '<a class="back" href="../">All guides</a><div class="empty">Could not load this trip.</div>';return;}
+  render(data);
+});
+</script>
+</body>
+</html>

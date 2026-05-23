@@ -106,6 +106,9 @@
   [data-theme="dark"] .share-card.copied{background:var(--accent);border-color:var(--accent);color:#102016}
   [data-theme="dark"] .credit a{text-decoration-color:rgba(241,236,225,.34)}
 </style>
+<link rel="stylesheet" href="./assets/account.css?v=supabase-auth">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+<script src="./assets/account.js?v=supabase-auth" defer></script>
 </head>
 <body>
 <header class="hero">
@@ -156,6 +159,7 @@
     {id:"upper-canada-village",href:"./upper-canada-village/",title:"Upper Canada Village",location:"Morrisburg, Ontario",desc:"A gentle day in the 1860s — costumed villagers, horse-drawn rides, and shaded benches at every turn.",tags:["History","Family","Accessible","Walking"],distance:110,duration:"Half day",season:"Summer–Fall",added:"2025-05-22",cover:"upper-canada-village",available:true,photo:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Upper_Canada_Village.jpg/960px-Upper_Canada_Village.jpg",photoAlt:"A historic building at Upper Canada Village",credit:'Photo: Jazmin Million, <a href="https://creativecommons.org/licenses/by-sa/2.0">CC BY-SA 2.0</a>'},
     {id:"placeholder-1",href:"#",title:"Coming soon",location:"Ottawa Valley",desc:"A future walking guide — details to follow.",tags:["Nature","Walking"],distance:60,duration:"Half day",season:"Summer",added:"2025-01-01",cover:"placeholder",available:false}
   ];
+  window.TRIP_GUIDES = TRIPS;
   const ALL_TAGS = [...new Set(TRIPS.flatMap(t=>t.tags))];
   const state = {q:"",tags:new Set(),favOnly:false,sort:"recent"};
   const theme = localStorage.getItem("tg-theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
