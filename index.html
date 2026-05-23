@@ -1,106 +1,222 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Trip Guides</title>
-  <style>
-    :root{
-      --bg:#f3f1ea;
-      --surface:#fffdf8;
-      --ink:#1f1e1d;
-      --muted:#646059;
-      --line:#ddd7c8;
-      --accent:#5d7d67;
-      --accent-soft:#e4ece3;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      min-height:100vh;
-      background:var(--bg);
-      color:var(--ink);
-      font:17px/1.6 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    }
-    main{
-      width:min(900px, calc(100% - 32px));
-      margin:0 auto;
-      padding:56px 0;
-    }
-    header{
-      margin-bottom:28px;
-      border-bottom:1px solid var(--line);
-      padding-bottom:22px;
-    }
-    h1{
-      margin:0 0 8px;
-      font-size:clamp(2rem, 5vw, 3.2rem);
-      line-height:1.05;
-      letter-spacing:0;
-    }
-    p{margin:0;color:var(--muted)}
-    .guides{
-      display:grid;
-      grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
-      gap:14px;
-      margin-top:24px;
-    }
-    a{
-      display:block;
-      min-height:140px;
-      padding:22px;
-      border:1px solid var(--line);
-      border-radius:8px;
-      background:var(--surface);
-      color:inherit;
-      text-decoration:none;
-      transition:border-color .16s ease, transform .16s ease, box-shadow .16s ease;
-    }
-    a:hover,
-    a:focus-visible{
-      border-color:var(--accent);
-      box-shadow:0 12px 28px -22px rgba(31,30,29,.55);
-      transform:translateY(-1px);
-      outline:none;
-    }
-    .label{
-      display:inline-block;
-      margin-bottom:14px;
-      border-radius:999px;
-      background:var(--accent-soft);
-      color:#34533e;
-      padding:4px 10px;
-      font-size:.78rem;
-      font-weight:700;
-      text-transform:uppercase;
-      letter-spacing:.06em;
-    }
-    h2{
-      margin:0 0 6px;
-      font-size:1.25rem;
-      line-height:1.2;
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Trip Guides — A personal travel atlas</title>
+<meta name="description" content="A small online shelf for personal day-trip plans and printable guides.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f5efe6; --paper:#fffaf2; --ink:#1f1d1a; --muted:#6b655c;
+    --line:#e5dccb; --accent:#3a6b4c; --accent-soft:#dbe7df;
+    --chip:#efe7d6; --shadow:0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(31,29,26,.06);
+    --radius:14px;
+  }
+  [data-theme="dark"]{
+    --bg:#15140f; --paper:#1c1b16; --ink:#f1ece1; --muted:#9b9484;
+    --line:#2c2a23; --accent:#8fc9a3; --accent-soft:#23332a;
+    --chip:#262319; --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 30px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:Inter,system-ui,sans-serif;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased;line-height:1.55}
+  a{color:inherit}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+  .hero{position:relative;overflow:hidden;background:radial-gradient(1200px 400px at 90% -10%, var(--accent-soft), transparent 60%),radial-gradient(800px 300px at -10% 10%, #f1e3c8 0%, transparent 60%),var(--bg);border-bottom:1px solid var(--line)}
+  [data-theme="dark"] .hero{background:radial-gradient(1200px 400px at 90% -10%, #1f3329, transparent 60%),radial-gradient(800px 300px at -10% 10%, #2a2418, transparent 60%),var(--bg)}
+  .nav{display:flex;justify-content:space-between;align-items:center;padding:20px 0}
+  .brand{font-family:Fraunces,serif;font-weight:800;font-size:20px;letter-spacing:-.01em}
+  .brand span{color:var(--accent)}
+  .nav-actions{display:flex;gap:8px}
+  .icon-btn{background:var(--paper);border:1px solid var(--line);color:var(--ink);width:38px;height:38px;border-radius:10px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:transform .15s, background .2s}
+  .icon-btn:hover{transform:translateY(-1px)}
+  .hero-inner{padding:56px 0 72px}
+  .eyebrow{display:inline-block;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:6px 12px;border-radius:999px;font-weight:600}
+  h1.title{font-family:Fraunces,serif;font-weight:800;letter-spacing:-.02em;font-size:clamp(40px, 7vw, 72px);line-height:1.02;margin:18px 0 14px}
+  .lede{font-size:18px;color:var(--muted);max-width:58ch}
+  .toolbar{margin-top:36px;display:grid;gap:12px;grid-template-columns:1fr auto auto}
+  @media (max-width:720px){.toolbar{grid-template-columns:1fr}}
+  .search{position:relative}
+  .search input{width:100%;padding:14px 16px 14px 44px;border-radius:12px;border:1px solid var(--line);background:var(--paper);color:var(--ink);font:inherit;outline:none}
+  .search input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  .search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted)}
+  .search kbd{position:absolute;right:12px;top:50%;transform:translateY(-50%);font:600 11px Inter;padding:2px 6px;border:1px solid var(--line);border-radius:6px;color:var(--muted);background:var(--bg)}
+  select,.pill-btn{padding:14px 16px;border-radius:12px;border:1px solid var(--line);background:var(--paper);color:var(--ink);font:inherit;cursor:pointer}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 0}
+  .chip{padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--paper);color:var(--ink);font-size:13px;cursor:pointer;transition:all .15s}
+  .chip[aria-pressed="true"]{background:var(--accent);color:white;border-color:var(--accent)}
+  main{padding:48px 0 80px}
+  .grid{display:grid;gap:24px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;text-decoration:none;color:inherit;transition:transform .2s, box-shadow .2s;position:relative}
+  .card:hover{transform:translateY(-3px);box-shadow:0 4px 8px rgba(0,0,0,.06), 0 20px 40px rgba(31,29,26,.12)}
+  .cover{aspect-ratio:16/10;background:linear-gradient(135deg,#cfe0d3,#a7c4b0);position:relative}
+  .cover.parc-omega{background:radial-gradient(circle at 30% 70%, rgba(255,255,255,.25), transparent 50%),linear-gradient(135deg,#3a6b4c 0%, #1f3a2a 60%, #6b8a4c 100%)}
+  .cover.upper-canada-village{background:radial-gradient(circle at 70% 30%, rgba(255,255,255,.2), transparent 50%),linear-gradient(135deg,#b07a3a 0%, #6e4a22 60%, #d9a665 100%)}
+  .cover.placeholder{background:repeating-linear-gradient(45deg, var(--chip) 0 10px, var(--paper) 10px 20px)}
+  .cover .badge{position:absolute;top:12px;left:12px;background:rgba(255,255,255,.92);color:#1f1d1a;font-size:11px;font-weight:600;letter-spacing:.08em;padding:5px 10px;border-radius:999px;text-transform:uppercase}
+  .fav{position:absolute;top:10px;right:10px;width:34px;height:34px;background:rgba(255,255,255,.92);border-radius:50%;border:0;cursor:pointer;display:grid;place-items:center;color:#1f1d1a}
+  .fav[aria-pressed="true"] svg{fill:#e0354b;color:#e0354b}
+  .body{padding:18px 20px 20px;display:flex;flex-direction:column;gap:10px;flex:1}
+  .loc{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}
+  .ttl{font-family:Fraunces,serif;font-weight:700;font-size:22px;letter-spacing:-.01em;margin:0}
+  .desc{color:var(--muted);font-size:14px;flex:1}
+  .meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .tag{font-size:11px;padding:4px 10px;border-radius:999px;background:var(--chip);color:var(--ink)}
+  .footer-row{display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid var(--line)}
+  .footer-row small{color:var(--muted)}
+  .read{font-weight:600;color:var(--accent);font-size:14px}
+  .card.disabled{pointer-events:none;opacity:.7}
+  .card.disabled .read{color:var(--muted)}
+  .empty{text-align:center;padding:60px 20px;color:var(--muted);border:1px dashed var(--line);border-radius:var(--radius)}
+  footer.page{border-top:1px solid var(--line);padding:30px 0;font-size:13px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+  @media print{.toolbar,.chips,.nav-actions,.fav{display:none}.card{break-inside:avoid;box-shadow:none;border:1px solid #ccc}body{background:white}}
+</style>
 </head>
 <body>
-  <main>
-    <header>
-      <h1>Trip Guides</h1>
-      <p>A small online shelf for personal day-trip plans and printable guides.</p>
-    </header>
-
-    <section class="guides" aria-label="Available guides">
-      <a href="./parc-omega/">
-        <span class="label">Day trip</span>
-        <h2>Parc Om&eacute;ga</h2>
-        <p>Montebello wildlife safari plan with a 9:00 AM departure.</p>
-      </a>
-      <a href="./upper-canada-village/">
-        <span class="label">Day trip</span>
-        <h2>Upper Canada Village</h2>
-        <p>A relaxed heritage village plan with plenty of seated stops.</p>
-      </a>
-    </section>
-  </main>
+<header class="hero">
+  <div class="wrap">
+    <div class="nav">
+      <div class="brand">Trip<span>·</span>Guides</div>
+      <div class="nav-actions">
+        <button class="icon-btn" id="favToggle" title="Show favorites only" aria-pressed="false" aria-label="Show favorites only">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 1 0-7.8 7.8l8.8 8.8 8.8-8.8a5.5 5.5 0 0 0 0-7.8z"/></svg>
+        </button>
+        <button class="icon-btn" id="themeToggle" title="Toggle dark mode" aria-label="Toggle dark mode">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="hero-inner">
+      <span class="eyebrow">A personal travel atlas</span>
+      <h1 class="title">Trip Guides</h1>
+      <p class="lede">A small online shelf for personal day-trip plans and printable guides — paced, walked, and tested in real life.</p>
+      <div class="toolbar">
+        <label class="search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input id="search" type="search" placeholder="Search trips, places, or tags…" aria-label="Search trips">
+          <kbd>/</kbd>
+        </label>
+        <select id="sort" aria-label="Sort trips">
+          <option value="recent">Recently added</option>
+          <option value="distance">Distance (near → far)</option>
+          <option value="title">A → Z</option>
+        </select>
+        <button class="pill-btn" id="clear">Clear filters</button>
+      </div>
+      <div class="chips" id="chips" role="group" aria-label="Filter by tag"></div>
+    </div>
+  </div>
+</header>
+<main class="wrap">
+  <div id="grid" class="grid"></div>
+  <div id="empty" class="empty" hidden>No trips match your filters yet — try clearing them.</div>
+</main>
+<footer class="page wrap">
+  <div>© <span id="yr"></span> Trip Guides · A personal project</div>
+  <div>Built as static HTML · <a href="https://github.com/mouhebg/trip-guides">Source</a></div>
+</footer>
+<script>
+  const TRIPS = [
+    {id:"parc-omega",href:"./parc-omega/",title:"Parc Oméga",location:"Montebello, Québec",desc:"A wildlife drive-through safari paced for a relaxed day — deer at the window, wolves at 2 PM.",tags:["Wildlife","Family","Accessible","Driving"],distance:120,duration:"Full day",season:"All seasons",added:"2025-05-20",cover:"parc-omega",available:true},
+    {id:"upper-canada-village",href:"./upper-canada-village/",title:"Upper Canada Village",location:"Morrisburg, Ontario",desc:"A gentle day in the 1860s — costumed villagers, horse-drawn rides, and shaded benches at every turn.",tags:["History","Family","Accessible","Walking"],distance:110,duration:"Half day",season:"Summer–Fall",added:"2025-05-22",cover:"upper-canada-village",available:true},
+    {id:"placeholder-1",href:"#",title:"Coming soon",location:"Ottawa Valley",desc:"A future walking guide — details to follow.",tags:["Nature","Walking"],distance:60,duration:"Half day",season:"Summer",added:"2025-01-01",cover:"placeholder",available:false}
+  ];
+  const ALL_TAGS = [...new Set(TRIPS.flatMap(t=>t.tags))];
+  const state = {q:"",tags:new Set(),favOnly:false,sort:"recent"};
+  const theme = localStorage.getItem("tg-theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  document.documentElement.dataset.theme = theme;
+  document.getElementById("themeToggle").onclick = () => {
+    const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem("tg-theme", next);
+  };
+  const favs = new Set(JSON.parse(localStorage.getItem("tg-favs") || "[]"));
+  const saveFavs = () => localStorage.setItem("tg-favs", JSON.stringify([...favs]));
+  const chipsEl = document.getElementById("chips");
+  ALL_TAGS.forEach(tag => {
+    const b = document.createElement("button");
+    b.className = "chip"; b.textContent = tag; b.setAttribute("aria-pressed","false");
+    b.onclick = () => {
+      if (state.tags.has(tag)) state.tags.delete(tag); else state.tags.add(tag);
+      b.setAttribute("aria-pressed", state.tags.has(tag));
+      render();
+    };
+    chipsEl.appendChild(b);
+  });
+  const searchEl = document.getElementById("search");
+  searchEl.oninput = e => { state.q = e.target.value.toLowerCase(); render(); };
+  document.getElementById("sort").onchange = e => { state.sort = e.target.value; render(); };
+  document.getElementById("clear").onclick = () => {
+    state.q=""; state.tags.clear(); state.favOnly=false; searchEl.value="";
+    document.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed","false"));
+    document.getElementById("favToggle").setAttribute("aria-pressed","false");
+    render();
+  };
+  document.getElementById("favToggle").onclick = (e) => {
+    state.favOnly = !state.favOnly;
+    e.currentTarget.setAttribute("aria-pressed", state.favOnly);
+    render();
+  };
+  document.addEventListener("keydown", e => {
+    if (e.key === "/" && document.activeElement !== searchEl) { e.preventDefault(); searchEl.focus(); }
+    if (e.key === "Escape" && document.activeElement === searchEl) { searchEl.value=""; state.q=""; render(); }
+  });
+  const grid = document.getElementById("grid");
+  const empty = document.getElementById("empty");
+  function render() {
+    let list = TRIPS.filter(t => {
+      const hay = (t.title + " " + t.location + " " + t.tags.join(" ")).toLowerCase();
+      if (state.q && !hay.includes(state.q)) return false;
+      if (state.tags.size && !t.tags.some(tag => state.tags.has(tag))) return false;
+      if (state.favOnly && !favs.has(t.id)) return false;
+      return true;
+    });
+    if (state.sort === "distance") list.sort((a,b)=>a.distance-b.distance);
+    if (state.sort === "title") list.sort((a,b)=>a.title.localeCompare(b.title));
+    if (state.sort === "recent") list.sort((a,b)=>b.added.localeCompare(a.added));
+    grid.innerHTML = "";
+    empty.hidden = list.length > 0;
+    for (const t of list) {
+      const fav = favs.has(t.id);
+      const a = document.createElement(t.available ? "a" : "div");
+      if (t.available) a.href = t.href;
+      a.className = "card" + (t.available ? "" : " disabled");
+      a.innerHTML = `
+        <div class="cover ${t.cover}">
+          <span class="badge">${t.available ? "Day Trip" : "Coming soon"}</span>
+          ${t.available ? `<button class="fav" aria-pressed="${fav}" data-id="${t.id}" aria-label="Save to favorites" title="Save to favorites">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 1 0-7.8 7.8l8.8 8.8 8.8-8.8a5.5 5.5 0 0 0 0-7.8z"/></svg>
+          </button>` : ""}
+        </div>
+        <div class="body">
+          <div class="loc">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-7.6 8-13a8 8 0 1 0-16 0c0 5.4 8 13 8 13z"/><circle cx="12" cy="9" r="2.5"/></svg>
+            ${t.location}
+          </div>
+          <h2 class="ttl">${t.title}</h2>
+          <p class="desc">${t.desc}</p>
+          <div class="meta">${t.tags.map(x=>`<span class="tag">${x}</span>`).join("")}</div>
+          <div class="footer-row">
+            <small>${t.distance} km · ${t.duration} · ${t.season}</small>
+            <span class="read">${t.available ? "Read guide →" : "Soon"}</span>
+          </div>
+        </div>`;
+      grid.appendChild(a);
+    }
+    grid.querySelectorAll(".fav").forEach(btn => {
+      btn.onclick = (e) => {
+        e.preventDefault(); e.stopPropagation();
+        const id = btn.dataset.id;
+        if (favs.has(id)) favs.delete(id); else favs.add(id);
+        saveFavs(); render();
+      };
+    });
+  }
+  document.getElementById("yr").textContent = new Date().getFullYear();
+  render();
+</script>
 </body>
-</html>
+  </html>
