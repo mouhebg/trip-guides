@@ -198,7 +198,16 @@
     .ag-item.done .ag-check svg{opacity:0;}
     .ag-check{border-color:#999;}
   }
-</style>
+
+    /* Real-photo figure */
+    .tg-photo{margin:24px 0 8px;position:relative;border-radius:20px;overflow:hidden;background:var(--surface);box-shadow:0 1px 2px rgba(0,0,0,.04),0 18px 40px rgba(0,0,0,.08)}
+    .tg-photo img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover}
+    .tg-photo figcaption{padding:10px 14px 14px;font-size:13px;color:var(--ink-soft);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .tg-photo figcaption a{color:var(--clay-deep);text-decoration:none;border-bottom:1px solid currentColor}
+    .tg-credit-line{margin:30px 0 0;padding-top:18px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-soft);text-align:center;line-height:1.55}
+    .tg-credit-line a{color:inherit;text-decoration:underline;text-decoration-color:rgba(0,0,0,.25)}
+  
+  </style>
   <link rel="stylesheet" href="../assets/enhance.css">
   <script src="../assets/enhance.js" defer></script>
 </head>
@@ -334,6 +343,17 @@
         </g>
       </svg>
     </div>
+
+    <figure class="tg-photo reveal" style="animation-delay:.3s">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Upper_Canada_Village.jpg/1280px-Upper_Canada_Village.jpg"
+           alt="A historic building at Upper Canada Village"
+           loading="lazy">
+      <figcaption>
+        <span>A view of the 1860s living-history village in Morrisburg.</span>
+        <span>Photo: <a href="https://commons.wikimedia.org/wiki/File:Upper_Canada_Village.jpg">Jazmin Million</a> · <a href="https://creativecommons.org/licenses/by-sa/2.0">CC BY-SA 2.0</a></span>
+      </figcaption>
+    </figure>
+
 
     <p class="lead reveal" style="animation-delay:.34s">
       Upper Canada Village is an easy, rewarding choice for a day out together. Walking through the gates feels like stepping into the 1860s, and the whole place moves at a slow, comfortable pace. There is plenty of seated activity and no shortage of shaded spots to rest, which makes it especially kind to older visitors.
@@ -547,7 +567,8 @@
       A calm, nostalgic, and immersive outing — the kind of place that tends to land well with older generations, bringing back memories of traditional trades and a slower way of life.
     </p>
 
-  </article>
+      <p class="tg-credit-line">Photography by <a href="https://commons.wikimedia.org/wiki/File:Upper_Canada_Village.jpg">Jazmin Million</a> via Wikimedia Commons, licensed under <a href="https://creativecommons.org/licenses/by-sa/2.0">CC BY-SA 2.0</a>. Illustrations and writing original to this guide.</p>
+</article>
 
   <script>
     function refreshNext(){
