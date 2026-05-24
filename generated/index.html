@@ -105,6 +105,7 @@ function carIcon(){return icon('<path d="M6 17h12M7 17l1.5-5h7L17 17M8 17a2 2 0 
 function mapIcon(){return icon('<path d="M12 21s7-5.3 7-12a7 7 0 1 0-14 0c0 6.7 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/>');}
 function shareIcon(){return icon('<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/>');}
 function pdfIcon(){return icon('<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 15h8M8 18h5"/>');}
+function htmlIcon(){return icon('<path d="m9 18-6-6 6-6"/><path d="m15 6 6 6-6 6"/><path d="m14 4-4 16"/>');}
 function toast(message){toastEl.textContent = message; toastEl.classList.add('show'); clearTimeout(toastEl._t); toastEl._t = setTimeout(()=>toastEl.classList.remove('show'), 1800);}
 
 function makeThumbnail(title, subtitle){
@@ -173,6 +174,7 @@ function headerHtml(row, guide){
       <a class="share-btn" href="${mapsUrl(guide, row)}" target="_blank" rel="noopener">${mapIcon()}<span>Open in Google Maps</span></a>
       <button class="share-btn" type="button" data-share>${shareIcon()}<span class="share-label">Share</span></button>
       <button class="share-btn" type="button" data-pdf>${pdfIcon()}<span>PDF</span></button>
+      <button class="share-btn" type="button" data-html>${htmlIcon()}<span>HTML</span></button>
       <button class="share-btn" type="button" data-visited aria-pressed="${visited}">${plusIcon()}<span>${row.visited ? 'Visited' : 'Mark visited'}</span></button>
     </div>`;
 }
@@ -328,6 +330,62 @@ function printPdf(guide){
   setTimeout(() => { document.title = oldTitle; }, 400);
 }
 
+function downloadFile(filename, content, type){
+  const blob = new Blob([content], {type});
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function staticGeneratedHtml(guide){
+  const clone = page.cloneNode(true);
+  clone.querySelector('[data-share]')?.remove();
+  clone.querySelector('[data-pdf]')?.remove();
+  clone.querySelector('[data-html]')?.remove();
+  clone.querySelector('[data-visited]')?.remove();
+  const css = document.querySelector('style')?.textContent || '';
+  const title = esc(guide.title || 'Trip Guide');
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${title}</title>
+<style>${css}</style>
+</head>
+<body>
+${clone.outerHTML}
+<script>
+document.querySelectorAll('[data-agenda]').forEach(function(card){
+  card.addEventListener('click', function(){
+    card.setAttribute('aria-pressed', card.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+    var cards = Array.prototype.slice.call(document.querySelectorAll('[data-agenda]'));
+    var done = cards.filter(function(item){ return item.getAttribute('aria-pressed') === 'true'; }).length;
+    var count = document.querySelector('[data-count]');
+    var fill = document.querySelector('[data-fill]');
+    if (count) count.textContent = done + ' / ' + cards.length;
+    if (fill) fill.style.width = cards.length ? ((done / cards.length) * 100) + '%' : '0%';
+  });
+});
+<\/script>
+</body>
+</html>`;
+}
+
+function exportHtml(row, guide){
+  const filename = slugify(guide.title || row.title || 'trip-guide') + '.html';
+  const html = guide.type === 'uploaded_html' && row.guide_data?.html
+    ? row.guide_data.html
+    : staticGeneratedHtml(guide);
+  downloadFile(filename, html, 'text/html;charset=utf-8');
+  toast('HTML downloaded');
+}
+
 async function toggleVisited(row){
   const next = !row.visited;
   const {data,error} = await client
@@ -347,6 +405,7 @@ async function toggleVisited(row){
 function attachActions(row, guide){
   page.querySelector('[data-share]').onclick = event => shareGuide(event.currentTarget, guide);
   page.querySelector('[data-pdf]').onclick = () => printPdf(guide);
+  page.querySelector('[data-html]').onclick = () => exportHtml(row, guide);
   page.querySelector('[data-visited]').onclick = () => toggleVisited(row);
 }
 

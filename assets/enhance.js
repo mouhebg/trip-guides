@@ -1,6 +1,6 @@
 /* Trip Guides — enhancement layer
    Adds: dark mode (shared with homepage), reading progress bar, sticky TOC,
-   persistent itinerary checklist, share/PDF/back-to-top, "Back to all guides" pill. */
+   persistent itinerary checklist, share/PDF/HTML/back-to-top, "Back to all guides" pill. */
 (function(){
   'use strict';
   const STORAGE_THEME = 'tg-theme';
@@ -70,6 +70,9 @@
     <button class="tg-btn" data-act="pdf" title="Save as PDF" aria-label="Save as PDF">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v5h4"/><path d="M8.8 16.2h1.2a1.2 1.2 0 0 0 0-2.4H8.8v4.4"/><path d="M12.5 13.8v4.4h1.1a1.8 1.8 0 0 0 0-3.6h-1.1"/><path d="M16.5 18.2v-4.4h2.2"/><path d="M16.5 16h1.8"/></svg>
     </button>
+    <button class="tg-btn" data-act="html" title="Export HTML" aria-label="Export HTML">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18-6-6 6-6"/><path d="m15 6 6 6-6 6"/><path d="m14 4-4 16"/></svg>
+    </button>
     <button class="tg-btn" data-act="top" title="Back to top" aria-label="Back to top">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
     </button>`;
@@ -107,12 +110,33 @@
     window.print();
   }
 
+  function downloadFile(filename, content, type){
+    const blob = new Blob([content], {type});
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function saveHtml(){
+    const clone = document.documentElement.cloneNode(true);
+    clone.querySelectorAll('.tg-progress,.tg-back,.tg-toc,.tg-actions,.tg-toast').forEach(el => el.remove());
+    const html = '<!doctype html>\n' + clone.outerHTML;
+    downloadFile(pdfTitle() + '.html', html, 'text/html;charset=utf-8');
+    toast('HTML downloaded');
+  }
+
   actions.addEventListener('click', async e => {
     const btn = e.target.closest('[data-act]'); if (!btn) return;
     const act = btn.dataset.act;
     if (act === 'theme') toggleTheme();
     if (act === 'top') window.scrollTo({top:0, behavior:'smooth'});
     if (act === 'pdf') savePdf();
+    if (act === 'html') saveHtml();
     if (act === 'share') {
       const data = {title: document.title, url: location.href};
       try {
