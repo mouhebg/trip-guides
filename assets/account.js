@@ -24,6 +24,7 @@
   let savedList;
   let aiStatus;
   let uploadStatus;
+  let loginCooldownTimer;
 
   const BUILT_INS = {
     'parc-omega': {
@@ -387,15 +388,36 @@
     const email = form.querySelector('input[type="email"]').value.trim();
     if (!email) return;
     const button = form.querySelector('button[type="submit"]');
+    if (button.disabled) return;
     button.disabled = true;
     button.textContent = 'Sending...';
     const {error} = await client.auth.signInWithOtp({
       email,
       options: {emailRedirectTo: authRedirectUrl()}
     });
-    button.disabled = false;
-    button.textContent = 'Send link';
-    toast(error ? error.message : 'Check your email for the login link.');
+    clearInterval(loginCooldownTimer);
+    if (error) {
+      const message = /rate|attempt|too many/i.test(error.message || '')
+        ? 'Too many login attempts. Wait a few minutes, then request one fresh link.'
+        : error.message;
+      button.disabled = false;
+      button.textContent = 'Send link';
+      toast(message);
+      return;
+    }
+    toast('Check your email. Use the newest link once.');
+    let seconds = 60;
+    button.textContent = `Wait ${seconds}s`;
+    loginCooldownTimer = setInterval(() => {
+      seconds -= 1;
+      if (seconds <= 0) {
+        clearInterval(loginCooldownTimer);
+        button.disabled = false;
+        button.textContent = 'Send link';
+      } else {
+        button.textContent = `Wait ${seconds}s`;
+      }
+    }, 1000);
   }
 
   async function signOut(){
